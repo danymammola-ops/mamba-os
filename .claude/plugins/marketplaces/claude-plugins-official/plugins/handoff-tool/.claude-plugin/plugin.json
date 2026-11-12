@@ -1,0 +1,22 @@
+{
+  "name": "handoff-tool",
+  "description": "Tool per generare HANDOFF.md con riepilogo sessione, escludendo dati sensibili",
+  "version": "1.0.0",
+  "author": {
+    "name": "Claude Code",
+    "email": "noreply@anthropic.com"
+  },
+  "displayName": "Handoff Tool",
+  "category": "productivity",
+  "source": {
+    "source": "local"
+  },
+  "commands": ["./commands"],
+  "agents": ["./agents"],
+  "hooks": {
+    "permissions": {
+      "defaultMode": "allow",
+      "allow": ["Read(*)", "Write(*)", "Bash(python *)", "Glob(*)"]
+    }
+  }
+}

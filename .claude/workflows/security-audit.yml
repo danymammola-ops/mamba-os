@@ -1,0 +1,42 @@
+name: Security Audit Pipeline
+description: Scan → Classifica (CVSS) → Fix → Verifica → Report compliance
+phases:
+  - title: Scan
+    detail: Analisi statica + pattern matching + dependency check
+  - title: Classify
+    detail: Scoring CVSS, priorità fix, false positive filtering
+  - title: Remediate
+    detail: Fix automatici + guida per fix manuali
+  - title: Verify
+    detail: Re-scan + regression test + compliance check
+
+scan_layers:
+  - sast: "Static Application Security Testing (semgrep-style rules)"
+  - secrets: "Hardcoded secrets, API keys, tokens, passwords"
+  - dependencies: "CVE in dipendenze (npm audit, pip-audit, cargo audit)"
+  - config: "Misconfig: debug enabled, cors *, weak TLS, open ports"
+  - iac: "Infrastructure as Code: terraform, k8s, dockerfile issues"
+
+classification:
+  critical: "CVSS 9-10: RCE, auth bypass, data exfiltration immediata"
+  high: "CVSS 7-8: SQLi, XSS stored, privilege escalation, path traversal"
+  medium: "CVSS 4-6: XSS reflected, info disclosure, weak crypto, CSRF"
+  low: "CVSS 0-3: Header missing, verbose errors, version disclosure"
+  info: "Best practice, defense in depth, hardening"
+
+remediation_priority:
+  - "Fix automatici: secrets removal, config hardening, dep update"
+  - "Fix guidati: input validation, output encoding, auth checks"
+  - "Fix manuali: architecture changes, crypto migration"
+
+verify_steps:
+  - "Re-run scan su codice fixato"
+  - "Test funzionalità interessate"
+  - "Dependency license check"
+  - "SBOM generation (CycloneDX/SPDX)"
+
+compliance_frameworks:
+  - OWASP_TOP_10
+  - CWE_TOP_25
+  - NIST_SSDF
+  - ISO_27001

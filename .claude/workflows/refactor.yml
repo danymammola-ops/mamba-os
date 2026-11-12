@@ -1,0 +1,45 @@
+name: Refactoring Pipeline
+description: Analisi → Piano → Esecuzione incrementale → Test → Verifica
+phases:
+  - title: Analyze
+    detail: Mappa codebase, identifica code smells, definisci target
+  - title: Plan
+    detail: Crea piano step-by-step con risk assessment
+  - title: Execute
+    detail: Refactoring incrementale con test a ogni step
+  - title: Verify
+    detail: Regression test + performance comparison
+
+analyze_dimensions:
+  - duplication: "Trova codice duplicato (AST-based)"
+  - complexity: "Funzioni > 50 righe, cyclomatic > 10"
+  - coupling: "Classi con troppe dipendenze, god objects"
+  - naming: "Variabili/funzioni poco chiare, abbreviazioni"
+  - dead_code: "Codice non raggiungibile, import inutilizzati"
+  - patterns: "Violazioni pattern noti (Factory, Strategy, etc.)"
+
+plan_template: |
+  ## Piano Refactoring: {target}
+
+  ### Priorità Alta (Risk: Basso, Impatto: Alto)
+  - [ ] {task} — {rationale} — Test: {test_file}
+
+  ### Priorità Media (Risk: Medio)
+  - [ ] {task} — {rationale}
+
+  ### Priorità Bassa (Nice to have)
+  - [ ] {task} — {rationale}
+
+execute_rules:
+  - "Un task alla volta"
+  - "Test prima di modificare (se non esistono, creali)"
+  - "Commit atomico per task"
+  - "Rollback immediato se test falliscono"
+  - "Aggiorna piano se emergono sorprese"
+
+verify_checklist:
+  - "Tutti i test passano (nuovi + vecchi)"
+  - "Coverage non diminuita"
+  - "Performance non degradate (benchmark)"
+  - "Lint/Type-check pulito"
+  - "Documentazione aggiornata"

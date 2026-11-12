@@ -1,0 +1,26 @@
+{
+  "env": {
+    "PROJECT_ROOT": "${HOME}/mio/ai",
+    "HANDOFF_SCRIPT": "${HOME}/mio/ai/scripts/handoff_generator.py",
+    "GITHUB_TOKEN": "${GITHUB_TOKEN}"
+  },
+  "permissions": {
+    "defaultMode": "bypassPermissions",
+    "allow": [
+      "Bash(python *)",
+      "Bash(python3 *)",
+      "Bash(claude *)",
+      "Write(*)",
+      "Read(*)"
+    ]
+  },
+  "hooks": {
+    "PreToolUse": [],
+    "PostToolUse": []
+  },
+  "shellAliases": {
+    "handoff": "python scripts/handoff_generator.py",
+    "handoff-focus": "python scripts/handoff_generator.py",
+    "handon": "python scripts/show_handoff.py"
+  }
+}

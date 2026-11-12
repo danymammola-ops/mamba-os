@@ -1,0 +1,46 @@
+name: Code Review Pipeline
+description: Pipeline completa: Review multi-dimensionale → Verifica findings → Report
+phases:
+  - title: Review
+    detail: Analisi parallela su bug, sicurezza, performance, stile
+  - title: Verify
+    detail: Verifica avversaria di ogni finding confermato
+  - title: Report
+    detail: Genera report consolidato con priorità
+
+dimensions:
+  - key: bugs
+    prompt: |
+      Analizza il codice per bug di logica, edge case, null pointer, race condition,
+      off-by-one, memory leak, eccezioni non gestite. Focus su correttezza funzionale.
+    label: "review:bugs"
+  - key: security
+    prompt: |
+      Analizza per vulnerabilità: injection (SQL, XSS, command), auth bypass,
+      secrets hardcoded, path traversal, insecure deserialization, crypto debole,
+      information disclosure, SSRF, XXE.
+    label: "review:security"
+  - key: performance
+    prompt: |
+      Analizza per: N+1 queries, loop inefficaci, memory allocation eccessiva,
+      blocking I/O in async, caching mancante, algorithmic complexity, bundle size.
+    label: "review:performance"
+  - key: maintainability
+    prompt: |
+      Analizza per: code duplication, funzioni troppo lunghe, coupling eccessivo,
+      naming poco chiaro, magic numbers, dead code, violazioni SOLID/DRY.
+    label: "review:maintainability"
+
+verify_prompt: |
+  Verifica avversariamente questo finding: è un vero bug o falso positivo?
+  Riproduci mentalmente l'input che lo triggera. Rispondi CONFIRMED o FALSE_POSITIVE
+  con spiegazione breve.
+
+output:
+  format: markdown
+  sections:
+    - critical: "🔴 Critici (bloccano merge)"
+    - high: "🟠 Alti (fix prima di merge)"
+    - medium: "🟡 Medi (tech debt)"
+    - low: "🟢 Bassi (nicchie)"
+    - info: "ℹ️ Informativi (suggerimenti)"

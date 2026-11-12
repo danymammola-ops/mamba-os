@@ -1,0 +1,27 @@
+# Cartelle pesanti e dipendenze
+node_modules/
+.venv/
+venv/
+env/
+__pycache__/
+*.pyc
+.git/
+.vscode/
+
+# Build e output
+dist/
+build/
+out/
+target/
+*.log
+
+# File multimediali e pesanti
+*.mp4
+*.mp3
+*.wav
+*.png
+*.jpg
+*.jpeg
+*.zip
+*.tar.gz
+*.iso

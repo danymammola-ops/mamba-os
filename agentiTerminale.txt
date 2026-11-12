@@ -1,0 +1,10 @@
+Ecco come aprire i seguenti agenti:
+
+1) Claude: /claude
+2) Claude Code (questo agente): claude
+3) Altri comandi utili:
+   - /help (per vedere tutti i comandi disponibili)
+   - /config (per le impostazioni)
+   - /clear (per pulire la chat)
+
+Tieni questo file aperto o consultalo quando non ricordi come invocarmi o invocare altri strumenti!

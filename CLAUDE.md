@@ -2,6 +2,11 @@
 
 Questo file definisce come devo comportarmi quando lavoro nel progetto `mio/ai`. Caricato automaticamente all'avvio.
 
+## 🔄 Handoff & GitUpdate Rules (REGOLA FERREA)
+- `/handoff`: Crea o aggiorna **ESCLUSIVAMENTE** il file locale `HANDOFF.md`. **NON fare mai commit, né push, né chiamate API a GitHub**. Rimane al 100% sul computer locale.
+- `/handon`: Legge **ESCLUSIVAMENTE** il file locale `HANDOFF.md` per riprendere il contesto di lavoro. Zero rete, zero commit.
+- `/gitupdate`: È **L'UNICO** comando autorizzato a sincronizzare `HANDOFF.md` con GitHub. Si attiva **SOLO ED ESCLUSIVAMENTE** quando l'utente digita esplicitamente `/gitupdate`.
+
 ## 🎯 Obiettivo del Progetto
 Sperimentazione, sviluppo e automazione con agenti AI, workflow e tooling avanzato.
 

@@ -4,7 +4,6 @@
 **Focus**: Nessuno
 
 ## 1. Obiettivo e Stato Attuale
-
 **Obiettivo principale**: Sviluppo e configurazione di Claude Code con workflow, skill e plugin
 **Stato attuale**: Configurazione completata
 
@@ -40,24 +39,20 @@
 - [ ] Testare le skill installate (auto-test, github-automation)
 
 ## 5. Skill e Comandi Consigliati
-
 **Skill installate**:
 - `/code-review` - Code review multi-agente
 - `/security-review` - Security audit
 - `/run` - Esecuzione progetti
 - `/loop` - Task ripetitivi
-
 **Comandi utili**:
 ```bash
 /claude plugin list         # Vedere plugin installati
 /claude plugin install <nombre>@claude-plugins-official  # Installare nuovi plugin
 ```
-
 **Workflow pronti all'uso**:
 - code-review.yml → Review completo codice
 - refactor.yml → Refactoring guidato
 - security-audit.yml → Security pipeline
-
 ---
 *Generato automaticamente da handoff.py*
 *Sessione: c:\Users\danym\mio\ai*

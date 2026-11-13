@@ -73,17 +73,27 @@ Questo progetto utilizza il ciclo di sessione a 3 comandi per azzerare il consum
 |---------|-------------|--------|
 | `/handoff [focus]` | Salva e sintetizza la sessione corrente in locale in `HANDOFF.md` | **100% Locale** (zero chiamate di rete) |
 | `/handon [sezione]` | Legge `HANDOFF.md` e riprende il lavoro all'istante con contesto pulito | **100% Locale** |
-| `/gitupdate` | Legge `HANDOFF.md`, aggiorna questa guida (`README.md`) e crea un backup completo su GitHub | **Remoto** (Backup Completo) |
+| `/gitupdate` | Rileva modifiche, aggiorna `README.md` e carica tutto su GitHub | **Remoto** (Backup Completo) |
 | `/gitupdate --dry-run` | Mostra l'anteprima dei file e delle modifiche senza inviarle | Anteprima |
 
 ---
 
 ## 📌 Stato del Progetto & Avanzamento (Sincronizzato da HANDOFF.md)
 
-*Ultimo aggiornamento: 2026-11-13 11:20:35*
+*Ultimo aggiornamento: 2026-11-13 16:13:27*
 
 **Obiettivo principale**: Configurare Claude Code per operare in autonomia (zero prompt permessi), integrare GitHub MCP e credenziali, implementare il workflow Handoff/Handon con sincronizzazione intelligente (`/gitupdate`) e progettare l'architettura Desktop Multi-Agente ("Idea Automatica").  
 **Stato attuale**: ✅ **Tutti i componenti configurati, testati e funzionanti al 100%**.
+
+### 📁 Ultimi File Modificati / Rilevati nel Progetto:
+| Data | File | Tipo | Descrizione |
+|------|------|------|-------------|
+| 2026-11-13 | .claude\skills\gitupdate\SKILL.md | md | Creato/Modificato |
+| 2026-11-13 | .claude\skills\handoff\SKILL.md | md | Creato/Modificato |
+| 2026-11-13 | .claude\skills\handon\SKILL.md | md | Creato/Modificato |
+| 2026-11-13 | scripts\gitupdate.py | py | Creato/Modificato |
+| 2026-11-13 | scripts\handoff_generator.py | py | Creato/Modificato |
+| 2026-11-13 | scripts\show_handoff.py | py | Creato/Modificato |
 
 ### Checklist Prossimi Passi:
 - [x] Creare repository GitHub e push iniziale

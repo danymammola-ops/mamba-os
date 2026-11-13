@@ -306,7 +306,7 @@ Questo progetto utilizza il ciclo di sessione a 3 comandi per azzerare il consum
 |---------|-------------|--------|
 | `/handoff [focus]` | Salva e sintetizza la sessione corrente in locale in `HANDOFF.md` | **100% Locale** (zero chiamate di rete) |
 | `/handon [sezione]` | Legge `HANDOFF.md` e riprende il lavoro all'istante con contesto pulito | **100% Locale** |
-| `/gitupdate` | Legge `HANDOFF.md`, rileva modifiche, aggiorna `README.md` e carica tutto su GitHub | **Remoto** (Backup Completo) |
+| `/gitupdate` | Rileva modifiche, aggiorna `README.md` e carica tutto su GitHub | **Remoto** (Backup Completo) |
 | `/gitupdate --dry-run` | Mostra l'anteprima dei file e delle modifiche senza inviarle | Anteprima |
 
 ---
@@ -322,10 +322,10 @@ Questo progetto utilizza il ciclo di sessione a 3 comandi per azzerare il consum
 {checklist_str}
 """
 
-        # Aggiorna la sezione Handoff / Workflow nel README
+        # Aggiorna la sezione Handoff / Workflow nel README usando lambda per evitare escape errati
         pattern = r"(##\s*(?:[^\n]*Handoff|[^\n]*Workflow di Sessione)[\s\S]*)"
         if re.search(pattern, readme_text):
-            updated_readme = re.sub(pattern, new_guide_section, readme_text)
+            updated_readme = re.sub(pattern, lambda m: new_guide_section, readme_text)
         else:
             updated_readme = readme_text.strip() + "\n\n" + new_guide_section
 
@@ -336,7 +336,7 @@ Questo progetto utilizza il ciclo di sessione a 3 comandi per azzerare il consum
                 "| `/handon` | Legge HANDOFF.md e riprende il lavoro con contesto pulito |\n"
                 "| `/gitupdate` | Rileva modifiche, aggiorna README.md ed esegue il backup su GitHub |\n"
             )
-            updated_readme = re.sub(r"\| `/handoff`[^\n]*\n", updated_table, updated_readme)
+            updated_readme = re.sub(r"\| `/handoff`[^\n]*\n", lambda m: updated_table, updated_readme)
 
         with open(readme_path, "w", encoding="utf-8", newline="\n") as f:
             f.write(updated_readme)

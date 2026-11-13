@@ -2,7 +2,8 @@
   "env": {
     "PROJECT_ROOT": "${HOME}/mio/ai",
     "HANDOFF_SCRIPT": "${HOME}/mio/ai/scripts/handoff_generator.py",
-    "GITHUB_TOKEN": "${GITHUB_TOKEN}"
+    "GITHUB_TOKEN": "${GITHUB_TOKEN}",
+    "CLAUDE_CODE_AUTO_COMPACT_WINDOW": "50000"
   },
   "permissions": {
     "defaultMode": "bypassPermissions",
@@ -23,5 +24,9 @@
     "handoff-focus": "python scripts/handoff_generator.py",
     "handon": "python scripts/show_handoff.py",
     "gitupdate": "python scripts/gitupdate.py"
-  }
+  },
+  "autoCompactEnabled": true,
+  "autoCompactWindow": 50000,
+  "precomputeCompactionEnabled": true,
+  "idleCompaction": true
 }

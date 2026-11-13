@@ -2,10 +2,11 @@
 """
 gitupdate.py - Backup completo del progetto e sincronizzazione intelligente di HANDOFF.md e README.md con GitHub.
 Esegue:
-1. Smart merge di HANDOFF.md (preservando tabelle, checklist e decisioni remote e locali senza duplicati).
-2. Aggiornamento automatico della guida del progetto (README.md) estraendo stato, checklist e comandi da HANDOFF.md.
-3. Backup totale di tutti i file di progetto creati/modificati/eliminati su GitHub (git add -A).
-4. Commit e push su origin <branch> per avere un ripristino istantaneo via git pull.
+1. Rileva automaticamente tutti i file nuovi/modificati dal git status (anche se l'utente non ha eseguito /handoff).
+2. Smart merge di HANDOFF.md (preservando tabelle, checklist e decisioni remote e locali senza duplicati).
+3. Inietta i file rilevati in HANDOFF.md e aggiorna la guida scritta del progetto (README.md) con stato, checklist e file.
+4. Backup totale di tutti i file di progetto creati/modificati/eliminati su GitHub (git add -A).
+5. Commit e push su origin <branch> per avere un ripristino istantaneo via git pull.
 Funziona globalmente su qualsiasi cartella di lavoro (repository git).
 """
 
@@ -161,6 +162,88 @@ def smart_merge(local_text, remote_text):
 
     return "\n".join(out).strip() + "\n"
 
+def get_git_detected_changes(repo_dir):
+    """Rileva file modificati, creati o eliminati direttamente dal working tree di git."""
+    res = subprocess.run(["git", "status", "--porcelain"], cwd=repo_dir, capture_output=True, text=True)
+    today = datetime.now().strftime("%Y-%m-%d")
+    changes = []
+    desc_map = {"M": "Modificato", "A": "Nuovo file", "??": "Nuovo file", "D": "Eliminato", "R": "Rinominato"}
+    for line in res.stdout.split("\n"):
+        line = line.strip()
+        if not line:
+            continue
+        status = line[:2].strip()
+        filepath = line[2:].strip().replace('"', "")
+        if filepath in ("HANDOFF.md", "README.md"):
+            continue
+        desc = desc_map.get(status, "Aggiornato")
+        ext = filepath.split(".")[-1] if "." in filepath else "file"
+        changes.append({
+            "date": today,
+            "path": filepath,
+            "type": ext,
+            "desc": desc
+        })
+    return changes
+
+def sync_git_changes_into_handoff(handoff_path, git_changes):
+    """Inietta i file modificati rilevati da git dentro HANDOFF.md se non presenti."""
+    if not git_changes:
+        return
+
+    content = ""
+    if os.path.exists(handoff_path):
+        with open(handoff_path, "r", encoding="utf-8") as f:
+            content = f.read()
+    else:
+        now_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        content = f"""# HANDOFF.md
+
+**Data generazione**: {now_str}
+**Focus**: Sincronizzazione automatica gitupdate
+
+## 1. Obiettivo e Stato Attuale
+**Obiettivo principale**: Sviluppo e gestione progetto con backup automatico GitHub.
+**Stato attuale**: Sincronizzato con GitHub.
+
+## 2. File Creati o Modificati
+| Data | File | Tipo | Descrizione |
+|------|------|------|-------------|
+
+## 3. Decisioni Chiave e Tentativi Scartati
+- Sincronizzazione automatica gitupdate attiva
+
+## 4. Checklist Prossimi Passi Concreti
+- [x] Sincronizzazione repository e backup GitHub
+"""
+
+    table_pattern = r"(## 2\.\s*File Creati o Modificati[\s\S]*?)(\n##|\Z)"
+    match = re.search(table_pattern, content)
+    if match:
+        table_block = match.group(1)
+        suffix = match.group(2)
+
+        existing_paths = set()
+        for line in table_block.split("\n"):
+            line = line.strip()
+            if line.startswith("|") and not line.startswith("|-") and "Tipo" not in line and "File" not in line:
+                parts = [p.strip() for p in line.split("|")[1:-1]]
+                if len(parts) >= 2:
+                    existing_paths.add(parts[1])
+
+        new_rows = []
+        for c in git_changes:
+            if c["path"] not in existing_paths:
+                new_rows.append(f"| {c['date']} | {c['path']} | {c['type']} | {c['desc']} |")
+                existing_paths.add(c["path"])
+
+        if new_rows:
+            updated_table = table_block.rstrip() + "\n" + "\n".join(new_rows) + "\n"
+            content = content[:match.start(1)] + updated_table + suffix + content[match.end():]
+
+    with open(handoff_path, "w", encoding="utf-8", newline="\n") as f:
+        f.write(content)
+
 def update_readme_from_handoff(repo_dir, handoff_path):
     readme_path = os.path.join(repo_dir, "README.md")
     if not os.path.exists(readme_path) or not os.path.exists(handoff_path):
@@ -199,6 +282,22 @@ def update_readme_from_handoff(repo_dir, handoff_path):
 
         checklist_str = "\n".join(checklist) if checklist else "- [x] Nessun task pendente"
 
+        # Estrai ultimi file modificati per dare visibilità immediata su GitHub
+        table_files = []
+        seen_paths = set()
+        for line in handoff_text.split("\n"):
+            line = line.strip()
+            if line.startswith("|") and not line.startswith("|-") and "Tipo" not in line and "File" not in line:
+                parts = [p.strip() for p in line.split("|")[1:-1]]
+                if len(parts) >= 4:
+                    if parts[1] not in seen_paths:
+                        seen_paths.add(parts[1])
+                        table_files.append(line)
+
+        recent_files_block = ""
+        if table_files:
+            recent_files_block = "### 📁 Ultimi File Modificati / Rilevati nel Progetto:\n| Data | File | Tipo | Descrizione |\n|------|------|------|-------------|\n" + "\n".join(table_files[-6:]) + "\n\n"
+
         new_guide_section = f"""## 📄 Workflow di Sessione & Backup
 
 Questo progetto utilizza il ciclo di sessione a 3 comandi per azzerare il consumo di token e mantenere la repository GitHub come **copia di backup identica del progetto locale**:
@@ -207,7 +306,7 @@ Questo progetto utilizza il ciclo di sessione a 3 comandi per azzerare il consum
 |---------|-------------|--------|
 | `/handoff [focus]` | Salva e sintetizza la sessione corrente in locale in `HANDOFF.md` | **100% Locale** (zero chiamate di rete) |
 | `/handon [sezione]` | Legge `HANDOFF.md` e riprende il lavoro all'istante con contesto pulito | **100% Locale** |
-| `/gitupdate` | Legge `HANDOFF.md`, aggiorna questa guida (`README.md`) e crea un backup completo su GitHub | **Remoto** (Backup Completo) |
+| `/gitupdate` | Legge `HANDOFF.md`, rileva modifiche, aggiorna `README.md` e carica tutto su GitHub | **Remoto** (Backup Completo) |
 | `/gitupdate --dry-run` | Mostra l'anteprima dei file e delle modifiche senza inviarle | Anteprima |
 
 ---
@@ -219,7 +318,7 @@ Questo progetto utilizza il ciclo di sessione a 3 comandi per azzerare il consum
 **Obiettivo principale**: {obj_str}  
 **Stato attuale**: {stat_str}
 
-### Checklist Prossimi Passi:
+{recent_files_block}### Checklist Prossimi Passi:
 {checklist_str}
 """
 
@@ -235,7 +334,7 @@ Questo progetto utilizza il ciclo di sessione a 3 comandi per azzerare il consum
             updated_table = (
                 "| `/handoff` | Salva la sessione in locale in HANDOFF.md |\n"
                 "| `/handon` | Legge HANDOFF.md e riprende il lavoro con contesto pulito |\n"
-                "| `/gitupdate` | Aggiorna README.md ed esegue il backup completo su GitHub |\n"
+                "| `/gitupdate` | Rileva modifiche, aggiorna README.md ed esegue il backup su GitHub |\n"
             )
             updated_readme = re.sub(r"\| `/handoff`[^\n]*\n", updated_table, updated_readme)
 
@@ -265,7 +364,14 @@ def main():
     except Exception:
         pass
 
-    # 2. Smart merge di HANDOFF.md se presente
+    # 2. Rileva modifiche vive nel progetto da Git (anche senza aver fatto /handoff)
+    git_changes = get_git_detected_changes(REPO_DIR)
+    if git_changes:
+        print(f"🔍 [gitupdate] Rilevate {len(git_changes)} modifiche nel progetto via Git status.")
+        if not dry_run and not diff_mode:
+            sync_git_changes_into_handoff(HANDOFF_PATH, git_changes)
+
+    # 3. Smart merge di HANDOFF.md con il remoto se presente
     merged = ""
     if os.path.exists(HANDOFF_PATH):
         try:
@@ -283,12 +389,12 @@ def main():
         except Exception as e:
             print(f"⚠️ [gitupdate] Avviso durante smart merge HANDOFF.md: {e}")
 
-    # 3. Aggiorna la guida del progetto (README.md) leggendo HANDOFF.md
+    # 4. Aggiorna la guida del progetto (README.md) con dati freschi e modifiche vive
     if not dry_run and not diff_mode:
         if update_readme_from_handoff(REPO_DIR, HANDOFF_PATH):
-            print("📖 [gitupdate] Guida scritta (README.md) aggiornata con stato e comandi da HANDOFF.md.")
+            print("📖 [gitupdate] Guida scritta (README.md) aggiornata con stato, checklist e modifiche vive.")
 
-    # 4. Stage di tutti i file di progetto (rispettando .gitignore)
+    # 5. Stage di tutti i file di progetto (rispettando .gitignore)
     if not dry_run and not diff_mode:
         run_git(["add", "-A"])
         status_res = run_git(["status", "--porcelain"])
@@ -305,7 +411,7 @@ def main():
             print(f"--- Anteprima HANDOFF.md ({HANDOFF_PATH}) ---")
             print(merged[:350] + "\n... (omesso resto anteprima)")
         if os.path.exists(README_PATH):
-            print(f"--- Guida scritta ({README_PATH}) verrebbe aggiornata con i dati di HANDOFF.md ---")
+            print(f"--- Guida scritta ({README_PATH}) verrebbe aggiornata con modifiche e dati freschi ---")
         print(f"--- File da backuppare su GitHub ({len(changes)} modifiche rilevate) ---")
         if changes:
             for c in changes[:20]:
@@ -321,7 +427,7 @@ def main():
         print(f"ℹ️ [gitupdate] Nessun file modificato: il progetto su origin/{branch} è già perfettamente sincronizzato e al sicuro.")
         return 0
 
-    # 5. Creazione commit descrittivo
+    # 6. Creazione commit descrittivo
     now_str = datetime.now().strftime("%Y-%m-%d %H:%M")
     has_handoff = any("HANDOFF.md" in c for c in changes)
     has_readme = any("README.md" in c for c in changes)
@@ -341,7 +447,7 @@ def main():
     print(f"📝 [gitupdate] Commit di backup creato: {commit_msg}")
     print(f"📦 [gitupdate] File inclusi nel backup: {len(changes)}")
 
-    # 6. Rebase e Push su GitHub
+    # 7. Rebase e Push su GitHub
     try:
         run_git(["pull", "--rebase", "-X", "ours", "origin", branch], check=False)
         push_res = run_git(["push", "origin", branch])

@@ -1,10 +1,10 @@
 # HANDOFF.md
 
-**Data generazione**: 2026-11-13 16:13:27
+**Data generazione**: 2026-11-13 16:23:51
 **Focus**: test merge intelligente
 
 ## 1. Obiettivo e Stato Attuale
-**Obiettivo principale**: Configurare Claude Code per operare in autonomia (zero prompt permessi), integrare GitHub MCP e credenziali, implementare il workflow Handoff/Handon con sincronizzazione intelligente (`/gitupdate`) e progettare l'architettura Desktop Multi-Agente ("Idea Automatica").
+**Obiettivo principale**: Configurare Claude Code per operare in autonomia (zero prompt permessi), integrare GitHub MCP e credenziali, implementare il workflow Handoff/Handon con sincronizzazione intelligente (`/gitpush`) e progettare l'architettura Desktop Multi-Agente ("Idea Automatica").
 **Stato attuale**: ✅ **Tutti i componenti configurati, testati e funzionanti al 100%**.
 
 ## 2. File Creati o Modificati
@@ -48,6 +48,18 @@
 | 2026-11-13 | scripts\gitupdate.py | py | Creato/Modificato |
 | 2026-11-13 | scripts\handoff_generator.py | py | Creato/Modificato |
 | 2026-11-13 | scripts\show_handoff.py | py | Creato/Modificato |
+| 2026-11-13 | scripts/gitpush.py | script | Sync intelligente HANDOFF.md |
+| 2026-11-13 | .claude/skills/gitpush.md | skill | Documentazione skill gitpush |
+| 2026-11-13 | .claude/commands/gitpush.md | command | Comando `/gitpush` (merge intelligente e push su GitHub) |
+| 2026-11-13 | .claude/skills/gitpush/SKILL.md | md | Git:  M |
+| 2026-11-13 | .claude/plugins/marketplaces/claude-plugins-official/plugins/handoff-tool/commands/gitpush.md | md | Git: ?? |
+| 2026-11-13 | .claude\commands\gitpush.md | md | Creato/Modificato |
+| 2026-11-13 | .claude\plugins\marketplaces\claude-plugins-official\plugins\handoff-tool\commands\gitpush.md | md | Creato/Modificato |
+| 2026-11-13 | .claude\skills\gitpush\SKILL.md | md | Creato/Modificato |
+| 2026-11-13 | scripts\gitpush.py | py | Creato/Modificato |
+| 2026-11-13 | .claude/skills/gitpush/ | claude/skills/gitpush/ | Nuovo file |
+| 2026-11-13 | gitpush.bat | bat | Nuovo file |
+| 2026-11-13 | gitpush.ps1 | ps1 | Nuovo file |
 
 ## 3. Decisioni Chiave e Tentativi Scartati
 - Usare skill in `.claude/skills/` invece di plugin globali per maggiore controllo
@@ -65,6 +77,7 @@
 - [ ] Creare un workflow personalizzato in .claude/workflows/
 - [ ] Testare le skill installate (auto-test, github-automation)
 - [ ] Eseguire test per: test merge intelligente
+- [ ] Testare gitpush --dry-run e sync reale
 
 ## 5. Skill e Comandi Consigliati
 **Skill installate**:
@@ -90,6 +103,8 @@
 - `/gitupdate` - Sincronizza `HANDOFF.md` con GitHub tramite merge intelligente
 - `/gitupdate --dry-run` - Mostra l'anteprima delle modifiche senza inviarle
 *Generato e verificato automaticamente per la sessione: mio/ai*
+- `/gitpush` - Sincronizza `HANDOFF.md` con GitHub tramite merge intelligente
+- `/gitpush --dry-run` - Mostra l'anteprima delle modifiche senza inviarle
 
 ## 3. Decisioni Chiave e Vincoli Architetturali
 - **Separazione Netta Locale vs Remoto**:
@@ -99,6 +114,8 @@
 - **Zero Dipendenze Esterne nel Sync**: `gitupdate.py` usa Python nativo e Git CLI standard, senza dipendere da `gh` o `jq`.
 - **Bypass Permessi Attivo**: Claude Code esegue comandi e modifiche senza bloccare l'utente con richieste continue di autorizzazione.
 - **Risparmio Token**: Token context pulito aprendo nuove schede con `/handon` dopo ogni `/handoff`.
+- `/gitpush` è **l'unico comando** che sincronizza con GitHub (solo quando invocato esplicitamente).
+- **Zero Dipendenze Esterne nel Sync**: `gitpush.py` usa Python nativo e Git CLI standard, senza dipendere da `gh` o `jq`.
 
 ## 4. Checklist Stato Avanzamento
 - [x] Configurato bypassPermissions per esecuzione autonoma di Claude Code
@@ -109,3 +126,5 @@
 - [x] Testato sync bidirezionale con GitHub (test completato con successo)
 - [x] Redatto documento architettura multi-agente in `Desktop/progetti ai/idea automatica.txt`
 - [ ] Avvio Fase 1 del progetto multi-agente "Idea Automatica"
+- [x] Implementato script `scripts/gitpush.py` per merge e sync GitHub
+- [x] Registrato comando `/gitpush` nel menu di Claude Code

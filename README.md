@@ -22,7 +22,7 @@ claude plugin list
 |---------|-------------|
 | `/handoff` | Salva la sessione in locale in HANDOFF.md |
 | `/handon` | Legge HANDOFF.md e riprende il lavoro con contesto pulito |
-| `/gitupdate` | Aggiorna README.md ed esegue il backup completo su GitHub |
+| `/gitpush` | Aggiorna README.md ed esegue il backup completo su GitHub |
 | `/code-review max-findings all` | Code review completa |
 | `/security-review` | Security audit |
 | `/run` | Lancia il progetto |
@@ -73,27 +73,27 @@ Questo progetto utilizza il ciclo di sessione a 3 comandi per azzerare il consum
 |---------|-------------|--------|
 | `/handoff [focus]` | Salva e sintetizza la sessione corrente in locale in `HANDOFF.md` | **100% Locale** (zero chiamate di rete) |
 | `/handon [sezione]` | Legge `HANDOFF.md` e riprende il lavoro all'istante con contesto pulito | **100% Locale** |
-| `/gitupdate` | Rileva modifiche, aggiorna `README.md` e carica tutto su GitHub | **Remoto** (Backup Completo) |
-| `/gitupdate --dry-run` | Mostra l'anteprima dei file e delle modifiche senza inviarle | Anteprima |
+| `/gitpush` | Rileva modifiche, aggiorna `README.md` e carica tutto su GitHub | **Remoto** (Backup Completo) |
+| `/gitpush --dry-run` | Mostra l'anteprima dei file e delle modifiche senza inviarle | Anteprima |
 
 ---
 
 ## 📌 Stato del Progetto & Avanzamento (Sincronizzato da HANDOFF.md)
 
-*Ultimo aggiornamento: 2026-11-13 16:13:27*
+*Ultimo aggiornamento: 2026-11-13 16:23:51*
 
-**Obiettivo principale**: Configurare Claude Code per operare in autonomia (zero prompt permessi), integrare GitHub MCP e credenziali, implementare il workflow Handoff/Handon con sincronizzazione intelligente (`/gitupdate`) e progettare l'architettura Desktop Multi-Agente ("Idea Automatica").  
+**Obiettivo principale**: Configurare Claude Code per operare in autonomia (zero prompt permessi), integrare GitHub MCP e credenziali, implementare il workflow Handoff/Handon con sincronizzazione intelligente (`/gitpush`) e progettare l'architettura Desktop Multi-Agente ("Idea Automatica").  
 **Stato attuale**: ✅ **Tutti i componenti configurati, testati e funzionanti al 100%**.
 
 ### 📁 Ultimi File Modificati / Rilevati nel Progetto:
 | Data | File | Tipo | Descrizione |
 |------|------|------|-------------|
-| 2026-11-13 | .claude\skills\gitupdate\SKILL.md | md | Creato/Modificato |
-| 2026-11-13 | .claude\skills\handoff\SKILL.md | md | Creato/Modificato |
-| 2026-11-13 | .claude\skills\handon\SKILL.md | md | Creato/Modificato |
-| 2026-11-13 | scripts\gitupdate.py | py | Creato/Modificato |
-| 2026-11-13 | scripts\handoff_generator.py | py | Creato/Modificato |
-| 2026-11-13 | scripts\show_handoff.py | py | Creato/Modificato |
+| 2026-11-13 | .claude\plugins\marketplaces\claude-plugins-official\plugins\handoff-tool\commands\gitpush.md | md | Creato/Modificato |
+| 2026-11-13 | .claude\skills\gitpush\SKILL.md | md | Creato/Modificato |
+| 2026-11-13 | scripts\gitpush.py | py | Creato/Modificato |
+| 2026-11-13 | .claude/skills/gitpush/ | claude/skills/gitpush/ | Nuovo file |
+| 2026-11-13 | gitpush.bat | bat | Nuovo file |
+| 2026-11-13 | gitpush.ps1 | ps1 | Nuovo file |
 
 ### Checklist Prossimi Passi:
 - [x] Creare repository GitHub e push iniziale
@@ -104,6 +104,7 @@ Questo progetto utilizza il ciclo di sessione a 3 comandi per azzerare il consum
 - [ ] Creare un workflow personalizzato in .claude/workflows/
 - [ ] Testare le skill installate (auto-test, github-automation)
 - [ ] Eseguire test per: test merge intelligente
+- [ ] Testare gitpush --dry-run e sync reale
 - [x] Configurato bypassPermissions per esecuzione autonoma di Claude Code
 - [x] Connesso GitHub MCP con Personal Access Token
 - [x] Implementati e testati comandi globali e locali `/handoff` e `/handon`
@@ -112,3 +113,5 @@ Questo progetto utilizza il ciclo di sessione a 3 comandi per azzerare il consum
 - [x] Testato sync bidirezionale con GitHub (test completato con successo)
 - [x] Redatto documento architettura multi-agente in `Desktop/progetti ai/idea automatica.txt`
 - [ ] Avvio Fase 1 del progetto multi-agente "Idea Automatica"
+- [x] Implementato script `scripts/gitpush.py` per merge e sync GitHub
+- [x] Registrato comando `/gitpush` nel menu di Claude Code

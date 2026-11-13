@@ -1,7 +1,7 @@
 # 🐍 Mamba — Autonomous Multi-Agent Desktop OS
 
 <p align="center">
-  <b>L'assistente desktop autonomo multi-agente per Windows a costo token zero.</b><br>
+  <b>L'assistente desktop autonomo multi-agente per Windows.</b><br>
   <i>Orchestrato da Antigravity · Ologramma 3D Verde Smeraldo · Voce Neurale · Automazione Desktop "User Moves" · Claude Code Engine</i>
 </p>
 

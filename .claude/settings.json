@@ -21,6 +21,7 @@
   "shellAliases": {
     "handoff": "python scripts/handoff_generator.py",
     "handoff-focus": "python scripts/handoff_generator.py",
-    "handon": "python scripts/show_handoff.py"
+    "handon": "python scripts/show_handoff.py",
+    "gitupdate": "python scripts/gitupdate.py"
   }
 }

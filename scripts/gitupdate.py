@@ -2,6 +2,7 @@
 """
 gitupdate.py - Sincronizzazione intelligente di HANDOFF.md con GitHub.
 Esegue il merge senza duplicati e sincronizza su GitHub tramite Git nativo.
+Funziona globalmente su qualsiasi cartella di lavoro (repository git).
 """
 
 import os
@@ -10,8 +11,12 @@ import re
 import subprocess
 from datetime import datetime
 
-REPO_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+REPO_DIR = os.getcwd()
 HANDOFF_PATH = os.path.join(REPO_DIR, "HANDOFF.md")
+if not os.path.exists(HANDOFF_PATH):
+    temp_path = os.path.join(os.environ.get("TEMP", ""), "HANDOFF.md")
+    if os.path.exists(temp_path):
+        HANDOFF_PATH = temp_path
 
 def run_git(args, check=True):
     res = subprocess.run(
@@ -145,10 +150,10 @@ def main():
     dry_run = "--dry-run" in sys.argv
     diff_mode = "--diff" in sys.argv
 
-    print("🔄 [gitupdate] Sincronizzazione intelligente HANDOFF.md con GitHub...")
+    print(f"🔄 [gitupdate] Sincronizzazione intelligente HANDOFF.md ({REPO_DIR})...")
 
     if not os.path.exists(HANDOFF_PATH):
-        print(f"❌ [gitupdate] File {HANDOFF_PATH} non trovato!")
+        print(f"❌ [gitupdate] File HANDOFF.md non trovato in {REPO_DIR}!")
         sys.exit(1)
 
     with open(HANDOFF_PATH, "r", encoding="utf-8") as f:

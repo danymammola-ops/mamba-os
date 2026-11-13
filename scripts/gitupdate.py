@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 """
-gitupdate.py - Backup completo del progetto e sincronizzazione intelligente di HANDOFF.md con GitHub.
+gitupdate.py - Backup completo del progetto e sincronizzazione intelligente di HANDOFF.md e README.md con GitHub.
 Esegue:
 1. Smart merge di HANDOFF.md (preservando tabelle, checklist e decisioni remote e locali senza duplicati).
-2. Backup totale di tutti i file di progetto creati/modificati/eliminati su GitHub (git add -A).
-3. Commit e push su origin <branch> per avere un ripristino istantaneo via git pull.
+2. Aggiornamento automatico della guida del progetto (README.md) estraendo stato, checklist e comandi da HANDOFF.md.
+3. Backup totale di tutti i file di progetto creati/modificati/eliminati su GitHub (git add -A).
+4. Commit e push su origin <branch> per avere un ripristino istantaneo via git pull.
 Funziona globalmente su qualsiasi cartella di lavoro (repository git).
 """
 
@@ -20,6 +21,8 @@ if not os.path.exists(HANDOFF_PATH):
     temp_path = os.path.join(os.environ.get("TEMP", ""), "HANDOFF.md")
     if os.path.exists(temp_path):
         HANDOFF_PATH = temp_path
+
+README_PATH = os.path.join(REPO_DIR, "README.md")
 
 def run_git(args, check=True):
     res = subprocess.run(
@@ -158,6 +161,92 @@ def smart_merge(local_text, remote_text):
 
     return "\n".join(out).strip() + "\n"
 
+def update_readme_from_handoff(repo_dir, handoff_path):
+    readme_path = os.path.join(repo_dir, "README.md")
+    if not os.path.exists(readme_path) or not os.path.exists(handoff_path):
+        return False
+
+    try:
+        with open(handoff_path, "r", encoding="utf-8") as f:
+            handoff_text = f.read()
+
+        with open(readme_path, "r", encoding="utf-8") as f:
+            readme_text = f.read()
+
+        # Estrai Data di generazione
+        date_m = re.search(r"\*\*Data generazione\*\*:\s*(.+)", handoff_text)
+        date_str = date_m.group(1).strip() if date_m else datetime.now().strftime("%Y-%m-%d %H:%M")
+
+        # Estrai Obiettivo e Stato Attuale
+        obj_m = re.search(r"\*\*Obiettivo principale\*\*:\s*(.+)", handoff_text)
+        obj_str = obj_m.group(1).strip() if obj_m else ""
+
+        stat_m = re.search(r"\*\*Stato attuale\*\*:\s*(.+)", handoff_text)
+        stat_str = stat_m.group(1).strip() if stat_m else ""
+
+        # Estrai Checklist (senza duplicazioni)
+        checklist = []
+        seen = set()
+        for line in handoff_text.split("\n"):
+            m = re.match(r"^\s*[-*]\s*\[([ xX])\]\s*(.+)$", line)
+            if m:
+                c, t = m.groups()
+                txt = t.strip()
+                k = txt.lower()
+                if k not in seen:
+                    seen.add(k)
+                    checklist.append(f"- [{c}] {txt}")
+
+        checklist_str = "\n".join(checklist) if checklist else "- [x] Nessun task pendente"
+
+        new_guide_section = f"""## 📄 Workflow di Sessione & Backup
+
+Questo progetto utilizza il ciclo di sessione a 3 comandi per azzerare il consumo di token e mantenere la repository GitHub come **copia di backup identica del progetto locale**:
+
+| Comando | Descrizione | Ambito |
+|---------|-------------|--------|
+| `/handoff [focus]` | Salva e sintetizza la sessione corrente in locale in `HANDOFF.md` | **100% Locale** (zero chiamate di rete) |
+| `/handon [sezione]` | Legge `HANDOFF.md` e riprende il lavoro all'istante con contesto pulito | **100% Locale** |
+| `/gitupdate` | Legge `HANDOFF.md`, aggiorna questa guida (`README.md`) e crea un backup completo su GitHub | **Remoto** (Backup Completo) |
+| `/gitupdate --dry-run` | Mostra l'anteprima dei file e delle modifiche senza inviarle | Anteprima |
+
+---
+
+## 📌 Stato del Progetto & Avanzamento (Sincronizzato da HANDOFF.md)
+
+*Ultimo aggiornamento: {date_str}*
+
+**Obiettivo principale**: {obj_str}  
+**Stato attuale**: {stat_str}
+
+### Checklist Prossimi Passi:
+{checklist_str}
+"""
+
+        # Aggiorna la sezione Handoff / Workflow nel README
+        pattern = r"(##\s*(?:[^\n]*Handoff|[^\n]*Workflow di Sessione)[\s\S]*)"
+        if re.search(pattern, readme_text):
+            updated_readme = re.sub(pattern, new_guide_section, readme_text)
+        else:
+            updated_readme = readme_text.strip() + "\n\n" + new_guide_section
+
+        # Aggiorna anche la tabella dei comandi principali se presente
+        if "| `/handoff`" in updated_readme and "/gitupdate" not in updated_readme.split("## 🛠️ Comandi Principali")[1].split("##")[0]:
+            updated_table = (
+                "| `/handoff` | Salva la sessione in locale in HANDOFF.md |\n"
+                "| `/handon` | Legge HANDOFF.md e riprende il lavoro con contesto pulito |\n"
+                "| `/gitupdate` | Aggiorna README.md ed esegue il backup completo su GitHub |\n"
+            )
+            updated_readme = re.sub(r"\| `/handoff`[^\n]*\n", updated_table, updated_readme)
+
+        with open(readme_path, "w", encoding="utf-8", newline="\n") as f:
+            f.write(updated_readme)
+
+        return True
+    except Exception as e:
+        print(f"⚠️ [gitupdate] Avviso durante aggiornamento README.md: {e}")
+        return False
+
 def main():
     dry_run = "--dry-run" in sys.argv
     diff_mode = "--diff" in sys.argv
@@ -177,7 +266,6 @@ def main():
         pass
 
     # 2. Smart merge di HANDOFF.md se presente
-    handoff_updated = False
     merged = ""
     if os.path.exists(HANDOFF_PATH):
         try:
@@ -192,11 +280,15 @@ def main():
             if not dry_run and not diff_mode:
                 with open(HANDOFF_PATH, "w", encoding="utf-8", newline="\n") as f:
                     f.write(merged)
-                handoff_updated = True
         except Exception as e:
             print(f"⚠️ [gitupdate] Avviso durante smart merge HANDOFF.md: {e}")
 
-    # 3. Stage di tutti i file di progetto (rispettando .gitignore)
+    # 3. Aggiorna la guida del progetto (README.md) leggendo HANDOFF.md
+    if not dry_run and not diff_mode:
+        if update_readme_from_handoff(REPO_DIR, HANDOFF_PATH):
+            print("📖 [gitupdate] Guida scritta (README.md) aggiornata con stato e comandi da HANDOFF.md.")
+
+    # 4. Stage di tutti i file di progetto (rispettando .gitignore)
     if not dry_run and not diff_mode:
         run_git(["add", "-A"])
         status_res = run_git(["status", "--porcelain"])
@@ -212,6 +304,8 @@ def main():
         if merged:
             print(f"--- Anteprima HANDOFF.md ({HANDOFF_PATH}) ---")
             print(merged[:350] + "\n... (omesso resto anteprima)")
+        if os.path.exists(README_PATH):
+            print(f"--- Guida scritta ({README_PATH}) verrebbe aggiornata con i dati di HANDOFF.md ---")
         print(f"--- File da backuppare su GitHub ({len(changes)} modifiche rilevate) ---")
         if changes:
             for c in changes[:20]:
@@ -227,28 +321,32 @@ def main():
         print(f"ℹ️ [gitupdate] Nessun file modificato: il progetto su origin/{branch} è già perfettamente sincronizzato e al sicuro.")
         return 0
 
-    # 4. Creazione commit descrittivo
+    # 5. Creazione commit descrittivo
     now_str = datetime.now().strftime("%Y-%m-%d %H:%M")
-    has_handoff_changed = any("HANDOFF.md" in c for c in changes)
-    other_files = [c for c in changes if "HANDOFF.md" not in c]
+    has_handoff = any("HANDOFF.md" in c for c in changes)
+    has_readme = any("README.md" in c for c in changes)
+    other_files = [c for c in changes if "HANDOFF.md" not in c and "README.md" not in c]
 
-    if has_handoff_changed and other_files:
-        commit_msg = f"backup: sync project files ({len(other_files)} files) and update HANDOFF.md ({now_str})"
-    elif has_handoff_changed:
-        commit_msg = f"chore: smart sync HANDOFF.md ({now_str})"
-    else:
-        commit_msg = f"backup: snapshot project files ({len(other_files)} files) ({now_str})"
+    parts = []
+    if other_files:
+        parts.append(f"sync project files ({len(other_files)} files)")
+    if has_readme:
+        parts.append("update README.md")
+    if has_handoff:
+        parts.append("sync HANDOFF.md")
+
+    commit_msg = f"backup: {', '.join(parts)} ({now_str})"
 
     run_git(["commit", "-m", commit_msg])
     print(f"📝 [gitupdate] Commit di backup creato: {commit_msg}")
     print(f"📦 [gitupdate] File inclusi nel backup: {len(changes)}")
 
-    # 5. Rebase e Push su GitHub
+    # 6. Rebase e Push su GitHub
     try:
         run_git(["pull", "--rebase", "-X", "ours", "origin", branch], check=False)
         push_res = run_git(["push", "origin", branch])
         print(f"🚀 [gitupdate] Backup completo su GitHub (origin/{branch}) completato con successo!")
-        print(f"🛡️ [gitupdate] Se serve ripristinare il progetto: git pull origin {branch}")
+        print(f"🛡️ [gitupdate] Copia esatta online: se serve ripristinare il progetto basta eseguire 'git pull origin {branch}'")
         if push_res.stdout.strip():
             print(push_res.stdout.strip())
     except Exception as e:

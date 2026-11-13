@@ -1,6 +1,6 @@
 # HANDOFF.md
 
-**Data generazione**: 2026-11-13 11:02:04
+**Data generazione**: 2026-11-13 11:20:35
 **Focus**: test merge intelligente
 
 ## 1. Obiettivo e Stato Attuale

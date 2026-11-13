@@ -1,6 +1,6 @@
 # HANDOFF.md
 
-**Data generazione**: 2026-11-13 02:00:24
+**Data generazione**: 2026-11-13 02:02:33
 **Focus**: Nessuno
 
 ## 1. Obiettivo e Stato Attuale
@@ -21,6 +21,7 @@
 | 2026-11-13 | .claude/skills/gitupdate.md | skill | Documentazione skill gitupdate |
 | 2026-11-13 | test-remote.md | test | Modifica solo remota |
 | 2026-11-13 | test-remote2.md | test | Altra modifica remota |
+| 2026-11-13 | test-local-new.md | test | Nuova modifica locale test |
 
 ## 3. Decisioni Chiave e Tentativi Scartati
 - Usare skill in `.claude/skills/` invece di plugin globali per maggiore controllo

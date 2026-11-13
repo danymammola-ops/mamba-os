@@ -19,9 +19,6 @@
 | 2026-11-13 | HANDOFF.md | docs | Aggiornato con task completati |
 | 2026-11-13 | scripts/gitupdate.py | script | Sync intelligente HANDOFF.md |
 | 2026-11-13 | .claude/skills/gitupdate.md | skill | Documentazione skill gitupdate |
-| 2026-11-13 | test-remote.md | test | Modifica solo remota |
-| 2026-11-13 | test-remote2.md | test | Altra modifica remota |
-| 2026-11-13 | test-local-new.md | test | Nuova modifica locale test |
 | 2026-11-13 | CLAUDE.md | config | Istruzioni globali progetto |
 | 2026-11-13 | .claude/skills/*.md | skill | Skill personalizzate (auto-test, github-automation, project-init) |
 | 2026-11-13 | .claude/workflows/*.yml | workflow | Workflow YAML (code-review, refactor, security-audit) |

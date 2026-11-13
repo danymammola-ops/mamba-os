@@ -1,6 +1,6 @@
 # CLAUDE.md - Istruzioni Globali per Claude Code
 
-Questo file definisce come devo comportarmi quando lavoro nel progetto `mio/ai`. Caricato automaticamente all'avvio.
+Questo file definisce come devo comportarmi quando lavoro nel progetto `mio/mamba`. Caricato automaticamente all'avvio.
 
 ## 🔄 Handoff & GitPush Rules (REGOLA FERREA)
 - `/handoff`: Crea o aggiorna **ESCLUSIVAMENTE** il file locale `HANDOFF.md`. **NON fare mai commit, né push, né chiamate API a GitHub**. Rimane al 100% sul computer locale.
@@ -26,7 +26,7 @@ Sperimentazione, sviluppo e automazione con agenti AI, workflow e tooling avanza
 ## 🔧 Tool & Permessi
 
 ### Sempre consentiti (no prompt)
-- Lettura/Scrittura file in `mio/ai/**`
+- Lettura/Scrittura file in `mio/mamba/**`
 - Esecuzione comandi `python`, `node`, `npm`, `git`, `gh`
 - Glob/Grep/Search nel progetto
 - WebFetch/WebSearch per documentazione
@@ -52,7 +52,7 @@ Salva i workflow in `.claude/workflows/`:
 
 ## 📁 Struttura Progetto Attesa
 ```
-mio/ai/
+mio/mamba/
 ├── CLAUDE.md           # Questo file
 ├── .claude/
 │   ├── settings.json   # Config locale (hooks, permessi)

@@ -1,6 +1,6 @@
 # HANDOFF.md
 
-**Data generazione**: 2026-11-13 17:59:57
+**Data generazione**: 2026-11-13 18:13:44
 **Focus**: Ristrutturazione Monorepo MAMBA OS
 
 ## 1. Obiettivo e Stato Attuale
@@ -117,6 +117,7 @@
 *Generato e verificato automaticamente per la sessione: mio/ai*
 - `/gitpush` - Sincronizza `HANDOFF.md` con GitHub tramite merge intelligente
 - `/gitpush --dry-run` - Mostra l'anteprima delle modifiche senza inviarle
+*Generato e verificato automaticamente per la sessione: mio/mamba*
 
 ## 3. Decisioni Chiave e Vincoli Architetturali
 - **Separazione Netta Locale vs Remoto**:

@@ -1,6 +1,6 @@
 # HANDOFF.md
 
-**Data generazione**: 2026-11-13 02:02:33
+**Data generazione**: 2026-11-13 02:05:24
 **Focus**: Nessuno
 
 ## 1. Obiettivo e Stato Attuale
@@ -22,6 +22,9 @@
 | 2026-11-13 | test-remote.md | test | Modifica solo remota |
 | 2026-11-13 | test-remote2.md | test | Altra modifica remota |
 | 2026-11-13 | test-local-new.md | test | Nuova modifica locale test |
+| 2026-11-13 | CLAUDE.md | config | Istruzioni globali progetto |
+| 2026-11-13 | .claude/skills/*.md | skill | Skill personalizzate (auto-test, github-automation, project-init) |
+| 2026-11-13 | .claude/workflows/*.yml | workflow | Workflow YAML (code-review, refactor, security-audit) |
 
 ## 3. Decisioni Chiave e Tentativi Scartati
 - Usare skill in `.claude/skills/` invece di plugin globali per maggiore controllo
@@ -31,13 +34,13 @@
 - Non usare rm -rf con glob pattern in hook (rischio accidental)
 
 ## 4. Checklist Prossimi Passi Concreti
-- [x] Configurare GITHUB_TOKEN in settings.json per automazione GitHub
 - [x] Creare repository GitHub e push iniziale
-- [x] Testare hook syntax check modificando un file .py o .ts
+- [ ] Testare gitupdate --dry-run e sync reale
+- [ ] Configurare GITHUB_TOKEN in settings.json per automazione GitHub
+- [ ] Testare hook syntax check modificando un file .py o .ts
 - [ ] Proviare /code-review su un file esistente
 - [ ] Creare un workflow personalizzato in .claude/workflows/
 - [ ] Testare le skill installate (auto-test, github-automation)
-- [ ] Testare gitupdate --dry-run e sync reale
 
 ## 5. Skill e Comandi Consigliati
 
@@ -60,4 +63,4 @@
 
 ---
 *Generato automaticamente da handoff.py*
-*Sessione: C:\Users\danym\mio\ai*
+*Sessione: c:\Users\danym\mio\ai*

@@ -1,6 +1,6 @@
 ---
 name: gitupdate
-description: Sincronizza intelligentemente HANDOFF.md con GitHub senza duplicati
+description: Backup completo del progetto su GitHub e smart sync di HANDOFF.md
 argumentHint: "[--dry-run|--diff]"
 ---
 

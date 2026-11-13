@@ -1,7 +1,7 @@
 # HANDOFF.md
 
-**Data generazione**: 2026-11-13 02:30:24
-**Focus**: Configurazione completa Claude Code, Automazioni, Token Optimization & GitUpdate
+**Data generazione**: 2026-11-13 02:35:21
+**Focus**: test merge intelligente
 
 ## 1. Obiettivo e Stato Attuale
 **Obiettivo principale**: Configurare Claude Code per operare in autonomia (zero prompt permessi), integrare GitHub MCP e credenziali, implementare il workflow Handoff/Handon con sincronizzazione intelligente (`/gitupdate`) e progettare l'architettura Desktop Multi-Agente ("Idea Automatica").
@@ -26,25 +26,45 @@
 | 2026-11-13 | .claude/commands/handon.md | command | Comando `/handon` (legge HANDOFF.md e riprende il lavoro) |
 | 2026-11-13 | .claude/commands/gitupdate.md | command | Comando `/gitupdate` (merge intelligente e push su GitHub) |
 | 2026-11-13 | Desktop/progetti ai/idea automatica.txt | docs | Architettura completa sistema multi-agente Jarvis |
+| 2026-11-13 | claude/settings.json | json | Git: M  |
+| 2026-11-13 | .claude/skills/gitupdate/SKILL.md | md | Git:  M |
+| 2026-11-13 | scripts/handoff_generator.py | py | Git:  M |
+| 2026-11-13 | .claude/plugins/marketplaces/claude-plugins-official/plugins/handoff-tool/commands/gitupdate.md | md | Git: ?? |
+| 2026-11-13 | README.md | md | Creato/Modificato |
+| 2026-11-13 | .claude\agents\handoff.md | md | Creato/Modificato |
+| 2026-11-13 | .claude\commands\gitupdate.md | md | Creato/Modificato |
+| 2026-11-13 | .claude\commands\handoff.md | md | Creato/Modificato |
+| 2026-11-13 | .claude\commands\handon.md | md | Creato/Modificato |
+| 2026-11-13 | .claude\skills\auto-test.md | md | Creato/Modificato |
+| 2026-11-13 | .claude\skills\github-automation.md | md | Creato/Modificato |
+| 2026-11-13 | .claude\skills\project-init.md | md | Creato/Modificato |
+| 2026-11-13 | .claude\plugins\marketplaces\claude-plugins-official\plugins\handoff-tool\commands\gitupdate.md | md | Creato/Modificato |
+| 2026-11-13 | .claude\plugins\marketplaces\claude-plugins-official\plugins\handoff-tool\commands\handoff.md | md | Creato/Modificato |
+| 2026-11-13 | .claude\plugins\marketplaces\claude-plugins-official\plugins\handoff-tool\commands\handon.md | md | Creato/Modificato |
+| 2026-11-13 | .claude\sk\ills\handoff\commands\handoff.md | md | Creato/Modificato |
+| 2026-11-13 | .claude\skills\gitupdate\SKILL.md | md | Creato/Modificato |
+| 2026-11-13 | .claude\skills\handoff\SKILL.md | md | Creato/Modificato |
+| 2026-11-13 | .claude\skills\handon\SKILL.md | md | Creato/Modificato |
+| 2026-11-13 | scripts\gitupdate.py | py | Creato/Modificato |
+| 2026-11-13 | scripts\handoff_generator.py | py | Creato/Modificato |
+| 2026-11-13 | scripts\show_handoff.py | py | Creato/Modificato |
 
-## 3. Decisioni Chiave e Vincoli Architetturali
-- **Separazione Netta Locale vs Remoto**:
-- `/handoff` lavora **esclusivamente in locale** su `HANDOFF.md`. Zero chiamate di rete, zero push GitHub.
-- `/handon` lavora **esclusivamente in locale** leggendo `HANDOFF.md`.
-- `/gitupdate` è **l'unico comando** che sincronizza con GitHub (solo quando invocato esplicitamente).
-- **Zero Dipendenze Esterne nel Sync**: `gitupdate.py` usa Python nativo e Git CLI standard, senza dipendere da `gh` o `jq`.
-- **Bypass Permessi Attivo**: Claude Code esegue comandi e modifiche senza bloccare l'utente con richieste continue di autorizzazione.
-- **Risparmio Token**: Token context pulito aprendo nuove schede con `/handon` dopo ogni `/handoff`.
+## 3. Decisioni Chiave e Tentativi Scartati
+- Usare skill in `.claude/skills/` invece di plugin globali per maggiore controllo
+- Configurare hooks PostToolUse per syntax check automatico Python/TypeScript
+- Installare 10 plugin ufficiali dal marketplace
+- Non configurare hook pre-commit (troppo invasivi per il flusso lavoro)
+- Non usare rm -rf con glob pattern in hook (rischio accidental)
 
-## 4. Checklist Stato Avanzamento
-- [x] Configurato bypassPermissions per esecuzione autonoma di Claude Code
-- [x] Connesso GitHub MCP con Personal Access Token
-- [x] Implementati e testati comandi globali e locali `/handoff` e `/handon`
-- [x] Implementato script `scripts/gitupdate.py` per merge e sync GitHub
-- [x] Registrato comando `/gitupdate` nel menu di Claude Code
-- [x] Testato sync bidirezionale con GitHub (test completato con successo)
-- [x] Redatto documento architettura multi-agente in `Desktop/progetti ai/idea automatica.txt`
-- [ ] Avvio Fase 1 del progetto multi-agente "Idea Automatica"
+## 4. Checklist Prossimi Passi Concreti
+- [x] Creare repository GitHub e push iniziale
+- [ ] Testare gitupdate --dry-run e sync reale
+- [ ] Configurare GITHUB_TOKEN in settings.json per automazione GitHub
+- [ ] Testare hook syntax check modificando un file .py o .ts
+- [ ] Proviare /code-review su un file esistente
+- [ ] Creare un workflow personalizzato in .claude/workflows/
+- [ ] Testare le skill installate (auto-test, github-automation)
+- [ ] Eseguire test per: test merge intelligente
 
 ## 5. Skill e Comandi Consigliati
 **Skill installate**:
@@ -71,18 +91,21 @@
 - `/gitupdate --dry-run` - Mostra l'anteprima delle modifiche senza inviarle
 *Generato e verificato automaticamente per la sessione: mio/ai*
 
-## 3. Decisioni Chiave e Tentativi Scartati
-- Usare skill in `.claude/skills/` invece di plugin globali per maggiore controllo
-- Configurare hooks PostToolUse per syntax check automatico Python/TypeScript
-- Installare 10 plugin ufficiali dal marketplace
-- Non configurare hook pre-commit (troppo invasivi per il flusso lavoro)
-- Non usare rm -rf con glob pattern in hook (rischio accidental)
+## 3. Decisioni Chiave e Vincoli Architetturali
+- **Separazione Netta Locale vs Remoto**:
+- `/handoff` lavora **esclusivamente in locale** su `HANDOFF.md`. Zero chiamate di rete, zero push GitHub.
+- `/handon` lavora **esclusivamente in locale** leggendo `HANDOFF.md`.
+- `/gitupdate` è **l'unico comando** che sincronizza con GitHub (solo quando invocato esplicitamente).
+- **Zero Dipendenze Esterne nel Sync**: `gitupdate.py` usa Python nativo e Git CLI standard, senza dipendere da `gh` o `jq`.
+- **Bypass Permessi Attivo**: Claude Code esegue comandi e modifiche senza bloccare l'utente con richieste continue di autorizzazione.
+- **Risparmio Token**: Token context pulito aprendo nuove schede con `/handon` dopo ogni `/handoff`.
 
-## 4. Checklist Prossimi Passi Concreti
-- [x] Creare repository GitHub e push iniziale
-- [ ] Testare gitupdate --dry-run e sync reale
-- [ ] Configurare GITHUB_TOKEN in settings.json per automazione GitHub
-- [ ] Testare hook syntax check modificando un file .py o .ts
-- [ ] Proviare /code-review su un file esistente
-- [ ] Creare un workflow personalizzato in .claude/workflows/
-- [ ] Testare le skill installate (auto-test, github-automation)
+## 4. Checklist Stato Avanzamento
+- [x] Configurato bypassPermissions per esecuzione autonoma di Claude Code
+- [x] Connesso GitHub MCP con Personal Access Token
+- [x] Implementati e testati comandi globali e locali `/handoff` e `/handon`
+- [x] Implementato script `scripts/gitupdate.py` per merge e sync GitHub
+- [x] Registrato comando `/gitupdate` nel menu di Claude Code
+- [x] Testato sync bidirezionale con GitHub (test completato con successo)
+- [x] Redatto documento architettura multi-agente in `Desktop/progetti ai/idea automatica.txt`
+- [ ] Avvio Fase 1 del progetto multi-agente "Idea Automatica"

@@ -1,6 +1,6 @@
 ---
 name: github-automation
-description: Automatizza workflow GitHub: PR, issue, release, branch management
+description: "Automatizza workflow GitHub: PR, issue, release, branch management"
 ---
 
 # Skill: GitHub Automation

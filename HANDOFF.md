@@ -1,6 +1,6 @@
 # HANDOFF.md
 
-**Data generazione**: 2026-11-13 16:23:51
+**Data generazione**: 2026-11-13 16:51:35
 **Focus**: test merge intelligente
 
 ## 1. Obiettivo e Stato Attuale
@@ -60,6 +60,8 @@
 | 2026-11-13 | .claude/skills/gitpush/ | claude/skills/gitpush/ | Nuovo file |
 | 2026-11-13 | gitpush.bat | bat | Nuovo file |
 | 2026-11-13 | gitpush.ps1 | ps1 | Nuovo file |
+| 2026-11-13 | .claude/sk/ills/handoff/commands/handoff.md | md | Eliminato |
+| 2026-11-13 | .claude/skills/github-automation.md | md | Modificato |
 
 ## 3. Decisioni Chiave e Tentativi Scartati
 - Usare skill in `.claude/skills/` invece di plugin globali per maggiore controllo

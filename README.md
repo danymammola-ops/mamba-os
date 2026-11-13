@@ -1,4 +1,4 @@
-# 🐍 M.A.M.B.A. — Multi-Agent Modular Brain Architecture
+# 🐍 Mamba — Autonomous Multi-Agent Desktop OS
 
 <p align="center">
   <b>L'assistente desktop autonomo multi-agente per Windows a costo token zero.</b><br>
@@ -98,7 +98,7 @@ Questo progetto utilizza il ciclo di sessione a 3 comandi per azzerare il consum
 
 ## 📌 Stato del Progetto & Avanzamento (Sincronizzato da HANDOFF.md)
 
-*Ultimo aggiornamento: 2026-11-13 17:47:01*
+*Ultimo aggiornamento: 2026-11-13 17:49:36*
 
 **Obiettivo principale**: Sviluppo di MAMBA OS — Sistema Desktop Autonomo Multi-Agente (Orchestratore Antigravity, FreeLLMAPI a costo zero, HUD 3D Verde Smeraldo, User Moves e Claude Code Engine).  
 **Stato attuale**: ✅ **Ristrutturazione Monorepo completata; fondamenta e comandi globali attivi**.

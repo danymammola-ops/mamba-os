@@ -1,6 +1,6 @@
 # HANDOFF.md
 
-**Data generazione**: 2026-11-13 17:47:01
+**Data generazione**: 2026-11-13 17:49:36
 **Focus**: Ristrutturazione Monorepo MAMBA OS
 
 ## 1. Obiettivo e Stato Attuale

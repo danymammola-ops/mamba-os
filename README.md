@@ -98,7 +98,7 @@ Questo progetto utilizza il ciclo di sessione a 3 comandi per azzerare il consum
 
 ## 📌 Stato del Progetto & Avanzamento (Sincronizzato da HANDOFF.md)
 
-*Ultimo aggiornamento: 2026-11-13 17:49:36*
+*Ultimo aggiornamento: 2026-11-13 17:58:17*
 
 **Obiettivo principale**: Sviluppo di MAMBA OS — Sistema Desktop Autonomo Multi-Agente (Orchestratore Antigravity, FreeLLMAPI a costo zero, HUD 3D Verde Smeraldo, User Moves e Claude Code Engine).  
 **Stato attuale**: ✅ **Ristrutturazione Monorepo completata; fondamenta e comandi globali attivi**.
@@ -106,12 +106,12 @@ Questo progetto utilizza il ciclo di sessione a 3 comandi per azzerare il consum
 ### 📁 Ultimi File Modificati / Rilevati nel Progetto:
 | Data | File | Tipo | Descrizione |
 |------|------|------|-------------|
-| 2026-11-13 | handoff.bat | bat | Git: ?? |
 | 2026-11-13 | handoff.ps1 | ps1 | Git: ?? |
 | 2026-11-13 | handon.bat | bat | Git: ?? |
 | 2026-11-13 | handon.ps1 | ps1 | Git: ?? |
 | 2026-11-13 | claude\README.md | md | Creato/Modificato |
 | 2026-11-13 | freellmapi\README.md | md | Creato/Modificato |
+| 2026-11-13 | mamba/ | file | Nuovo file |
 
 ### Checklist Prossimi Passi:
 - [x] Creare repository GitHub e push iniziale

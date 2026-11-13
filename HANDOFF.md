@@ -1,6 +1,6 @@
 # HANDOFF.md
 
-**Data generazione**: 2026-11-13 17:49:36
+**Data generazione**: 2026-11-13 17:58:17
 **Focus**: Ristrutturazione Monorepo MAMBA OS
 
 ## 1. Obiettivo e Stato Attuale
@@ -71,6 +71,7 @@
 | 2026-11-13 | handon.ps1 | ps1 | Git: ?? |
 | 2026-11-13 | claude\README.md | md | Creato/Modificato |
 | 2026-11-13 | freellmapi\README.md | md | Creato/Modificato |
+| 2026-11-13 | mamba/ | file | Nuovo file |
 
 ## 3. Decisioni Chiave e Tentativi Scartati
 - Usare skill in `.claude/skills/` invece di plugin globali per maggiore controllo

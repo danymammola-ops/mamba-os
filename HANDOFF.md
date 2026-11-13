@@ -1,6 +1,6 @@
 # HANDOFF.md
 
-**Data generazione**: 2026-11-13 00:36:45
+**Data generazione**: 2026-11-13 01:56:23
 **Focus**: Nessuno
 
 ## 1. Obiettivo e Stato Attuale
@@ -9,7 +9,6 @@
 **Stato attuale**: Configurazione completata
 
 ## 2. File Creati o Modificati
-
 | Data | File | Tipo | Descrizione |
 |------|------|------|-------------|
 | 2026-11-12 | CLAUDE.md | config | Istruzioni globali progetto |
@@ -20,18 +19,13 @@
 | 2026-11-13 | HANDOFF.md | docs | Aggiornato con task completati |
 
 ## 3. Decisioni Chiave e Tentativi Scartati
-
-### ✅ Decisioni Prese
 - Usare skill in `.claude/skills/` invece di plugin globali per maggiore controllo
 - Configurare hooks PostToolUse per syntax check automatico Python/TypeScript
 - Installare 10 plugin ufficiali dal marketplace
-
-### ❌ Tentativi Scartati / Errori da Evitare
 - Non configurare hook pre-commit (troppo invasivi per il flusso lavoro)
 - Non usare rm -rf con glob pattern in hook (rischio accidental)
 
 ## 4. Checklist Prossimi Passi Concreti
-
 - [x] Configurare GITHUB_TOKEN in settings.json per automazione GitHub
 - [x] Creare repository GitHub e push iniziale
 - [ ] Testare hook syntax check modificando un file .py o .ts

@@ -1,6 +1,6 @@
 # HANDOFF.md
 
-**Data generazione**: 2026-11-13 01:56:23
+**Data generazione**: 2026-11-13 01:57:23
 **Focus**: Nessuno
 
 ## 1. Obiettivo e Stato Attuale
@@ -17,6 +17,8 @@
 | 2026-11-12 | .claude/workflows/*.yml | workflow | Workflow YAML (code-review, refactor, security-audit) |
 | 2026-11-13 | .claude/settings.json | config | Aggiunto GITHUB_TOKEN per automazione GitHub |
 | 2026-11-13 | HANDOFF.md | docs | Aggiornato con task completati |
+| 2026-11-13 | scripts/gitupdate.py | script | Sync intelligente HANDOFF.md |
+| 2026-11-13 | .claude/skills/gitupdate.md | skill | Documentazione skill gitupdate |
 
 ## 3. Decisioni Chiave e Tentativi Scartati
 - Usare skill in `.claude/skills/` invece di plugin globali per maggiore controllo
@@ -28,10 +30,11 @@
 ## 4. Checklist Prossimi Passi Concreti
 - [x] Configurare GITHUB_TOKEN in settings.json per automazione GitHub
 - [x] Creare repository GitHub e push iniziale
-- [ ] Testare hook syntax check modificando un file .py o .ts
+- [x] Testare hook syntax check modificando un file .py o .ts
 - [ ] Proviare /code-review su un file esistente
 - [ ] Creare un workflow personalizzato in .claude/workflows/
 - [ ] Testare le skill installate (auto-test, github-automation)
+- [ ] Testare gitupdate --dry-run e sync reale
 
 ## 5. Skill e Comandi Consigliati
 

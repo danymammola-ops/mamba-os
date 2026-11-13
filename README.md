@@ -1,69 +1,87 @@
-# Progetto AI & Claude Code
+# 🐍 M.A.M.B.A. — Multi-Agent Modular Brain Architecture
 
-Progetto per sperimentazione e sviluppo con Claude Code integrato, workflow e tool avanzati.
+<p align="center">
+  <b>L'assistente desktop autonomo multi-agente per Windows a costo token zero.</b><br>
+  <i>Orchestrato da Antigravity · Ologramma 3D Verde Smeraldo · Voce Neurale · Automazione Desktop "User Moves" · Claude Code Engine</i>
+</p>
 
-## 🚀 Primi Passi
+<p align="center">
+  <img src="https://img.shields.io/badge/Theme-Emerald%20Viper%20Green-00ff88?style=for-the-badge" alt="Theme">
+  <img src="https://img.shields.io/badge/Cost-100%25%20Free%20(FreeLLMAPI)-05d672?style=for-the-badge" alt="Cost">
+  <img src="https://img.shields.io/badge/OS-Windows%2011%20%2F%2010-008037?style=for-the-badge" alt="OS">
+  <img src="https://img.shields.io/badge/AutoCompact-50k%20Tokens-00ff66?style=for-the-badge" alt="AutoCompact">
+</p>
 
-### Configurazione iniziale
-```bash
-# 1. Verifica le skill
-ls .claude/skills/
+---
 
-# 2. Verifica i workflow
-ls .claude/workflows/
+## ⚡ Visione del Progetto
+**MAMBA** è un sistema operativo cognitivo personale per Windows ispirato alla velocità e all'agilità del *Green Mamba*.  
+Non è un semplice chatbot: è una **presenza attiva sul desktop** in grado di comprendere comandi in linguaggio naturale, muovere fisicamente il mouse, inviare messaggi su WhatsApp Desktop, sviluppare codice in autonomia con Claude Code e gestire la tua giornata con una voce neurale italiana ultra-fluida.
 
-# 3. Verifica i plugin installati
-claude plugin list
+Tutto il ragionamento gira a **costo zero** appoggiandosi al router locale [FreeLLMAPI](freellmapi/README.md) con auto-rotazione su oltre 100+ modelli AI gratuiti.
+
+---
+
+## 🏗️ Architettura Multi-Agente
+
+```mermaid
+flowchart TD
+    User["🎤 Utente (Voce 'Ciao Mamba' o Testo)"] --> UI["✨ HUD Olografico 3D (Three.js - Tema Verde Smeraldo)"]
+    UI <-->|WebSockets| Core["🐍 MAMBA CORE (Antigravity Orchestrator)"]
+
+    Core <--> FreeLLM["⛽ FreeLLMAPI Gateway (Rotazione Gratuita 108+ Modelli)"]
+    Core <--> Guard["🛡️ Token Guard (Auto-Compact a 50k Tokens)"]
+    Core <--> Mem["🧠 MAMBA-MEMORIA.md (Memoria a Lungo Termine)"]
+
+    Core -->|1. GUI & Azioni Windows| Moves["🖱️ User Moves (WhatsApp, Mouse, Finestre UIA)"]
+    Core -->|2. Compiti di Codice & File| Claude["💻 Claude Code (Sviluppo Autonomo & Terminale)"]
+    Core -->|3. Calcolo & Logica Rapida| Quick["⚡ Calcolo Istantaneo Locale"]
+
+    Moves --> Feedback["🔊 Risposta Vocale (Edge-TTS Neurale)"]
+    Claude --> Feedback
+    Quick --> Feedback
+    Feedback --> UI
 ```
 
-## 🛠️ Comandi Principali
+---
 
-| Comando | Descrizione |
-|---------|-------------|
-| `/handoff` | Salva la sessione in locale in HANDOFF.md |
-| `/handon` | Legge HANDOFF.md e riprende il lavoro con contesto pulito |
-| `/gitpush` | Aggiorna README.md ed esegue il backup completo su GitHub |
-| `/code-review max-findings all` | Code review completa |
-| `/security-review` | Security audit |
-| `/run` | Lancia il progetto |
-| `/loop 5m git status` | Monitoraggio periodico |
+## 🌟 Caratteristiche Principali
 
-## 📂 Struttura Progetto
+* 🐍 **Ologramma 3D Emerald Viper**: Interfaccia olografica fluida in Three.js con un orb particellare verde smeraldo e rete neurale che illumina le sinapsi in tempo reale durante il ragionamento.
+* 🎙️ **Pipeline Vocale Nativa**: Attivazione vocale con *«Ciao Mamba»*, anti-eco automatico mentre parla, interruzione istantanea con *«Stop»* e voce neurale italiana via Microsoft Edge-TTS gratuita.
+* 🛡️ **Auto-Compact 50k Token Guard**: Monitoraggio del contesto in tempo reale; al raggiungimento di 50.000 token, compattazione automatica e persistenza per sessioni infinite senza rallentamenti.
+* 🖱️ **User Moves (Desktop Automation)**: Integrazione rapida con WhatsApp Desktop (deep-link istantaneo `whatsapp://send`), gestione delle finestre Windows e simulazione mouse con fail-safe di sicurezza.
+* 💻 **Claude Code Engine**: Braccio di programmazione autonomo per creare file, lanciare test e mantenere la repository sincronizzata via Git.
+* 🔄 **Ciclo di Sessione Universale**: Comandi nativi eseguibili in qualsiasi terminale: `./handoff`, `./handon`, `./gitpush`.
+
+---
+
+## 📂 Struttura della Repository
 
 ```
-.
-├── CLAUDE.md                    # Istruzioni globali
-├── HANDOFF.md                   # Sessione riepilogo (generato)
-├── .claude/
-│   ├── settings.json            # Config locale
-│   ├── skills/                  # Skill personalizzate
-│   ├── workflows/               # Workflow YAML
-│   └── agents/                  # Agenti specializzati
-├── scripts/
-│   └── handoff_generator.py     # Generatore HANDOFF.md
-├── docs/                        # Documentazione
-└── src/                         # Codice sorgente
+mio/ai/
+├── README.md                      # 🌟 Questa pagina (Vetrina principale MAMBA)
+├── HANDOFF.md                     # 🔄 Memoria di sessione universale cross-agent
+├── gitpush.bat / gitpush.ps1      # 🚀 Backup istantaneo su GitHub (./gitpush)
+├── handoff.bat / handoff.ps1      # 📝 Generatore snapshot locale (./handoff)
+├── handon.bat / handon.ps1        # ⚡ Ripresa immediata sessione (./handon)
+│
+├── mamba/                         # 🐍 IL CUORE DI MAMBA OS
+│   ├── core/                      # Orchestratore Antigravity, Router & Token Guard 50k
+│   ├── moves/                     # Modulo User Moves (WhatsApp, Windows UIA, PyAutoGUI)
+│   ├── voice/                     # Motore vocale neurale Edge-TTS
+│   ├── ui/                        # Frontend Three.js olografico (Tema Verde Serpente)
+│   └── data/                      # Memoria persistente locale
+│
+├── claude/                        # 💻 ECOSISTEMA CLAUDE CODE
+│   ├── README.md                  # 📖 Guida completa configurazione e skill di Claude Code
+│   └── ...                        # Configurazione e file dedicati
+│
+└── freellmapi/                    # ⛽ GATEWAY TOKEN GRATIS
+    └── README.md                  # Configurazione router FreeLLMAPI porta 31415
 ```
 
-## 🔧 Skill Installate
-
-| Skill | Uso |
-|-------|-----|
-| `auto-test` | Test automatici su cambio file |
-| `github-automation` | Automazione GitHub (PR, issue) |
-| `project-init` | Scaffolding nuovi progetti |
-| `handoff` | Riepilogo sessione |
-
-## 📊 Workflow Disponibili
-
-1. **code-review.yml** → Review multi-dimensionale
-2. **refactor.yml** → Refactoring incrementale
-3. **security-audit.yml** → Security pipeline
-
-## 🔐 Dati Sensibili
-
-⚠️ **NON** aggiungere mai API keys, token o password in questo progetto.  
-Usa variabili d'ambiente o file `.env` fuori dal versionamento.
+---
 
 ## 📄 Workflow di Sessione & Backup
 
@@ -80,20 +98,20 @@ Questo progetto utilizza il ciclo di sessione a 3 comandi per azzerare il consum
 
 ## 📌 Stato del Progetto & Avanzamento (Sincronizzato da HANDOFF.md)
 
-*Ultimo aggiornamento: 2026-11-13 16:51:35*
+*Ultimo aggiornamento: 2026-11-13 17:47:01*
 
-**Obiettivo principale**: Configurare Claude Code per operare in autonomia (zero prompt permessi), integrare GitHub MCP e credenziali, implementare il workflow Handoff/Handon con sincronizzazione intelligente (`/gitpush`) e progettare l'architettura Desktop Multi-Agente ("Idea Automatica").  
-**Stato attuale**: ✅ **Tutti i componenti configurati, testati e funzionanti al 100%**.
+**Obiettivo principale**: Sviluppo di MAMBA OS — Sistema Desktop Autonomo Multi-Agente (Orchestratore Antigravity, FreeLLMAPI a costo zero, HUD 3D Verde Smeraldo, User Moves e Claude Code Engine).  
+**Stato attuale**: ✅ **Ristrutturazione Monorepo completata; fondamenta e comandi globali attivi**.
 
 ### 📁 Ultimi File Modificati / Rilevati nel Progetto:
 | Data | File | Tipo | Descrizione |
 |------|------|------|-------------|
-| 2026-11-13 | scripts\gitpush.py | py | Creato/Modificato |
-| 2026-11-13 | .claude/skills/gitpush/ | claude/skills/gitpush/ | Nuovo file |
-| 2026-11-13 | gitpush.bat | bat | Nuovo file |
-| 2026-11-13 | gitpush.ps1 | ps1 | Nuovo file |
-| 2026-11-13 | .claude/sk/ills/handoff/commands/handoff.md | md | Eliminato |
-| 2026-11-13 | .claude/skills/github-automation.md | md | Modificato |
+| 2026-11-13 | handoff.bat | bat | Git: ?? |
+| 2026-11-13 | handoff.ps1 | ps1 | Git: ?? |
+| 2026-11-13 | handon.bat | bat | Git: ?? |
+| 2026-11-13 | handon.ps1 | ps1 | Git: ?? |
+| 2026-11-13 | claude\README.md | md | Creato/Modificato |
+| 2026-11-13 | freellmapi\README.md | md | Creato/Modificato |
 
 ### Checklist Prossimi Passi:
 - [x] Creare repository GitHub e push iniziale

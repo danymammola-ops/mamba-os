@@ -1,11 +1,11 @@
 # HANDOFF.md
 
-**Data generazione**: 2026-11-13 16:51:35
-**Focus**: test merge intelligente
+**Data generazione**: 2026-11-13 17:47:01
+**Focus**: Ristrutturazione Monorepo MAMBA OS
 
 ## 1. Obiettivo e Stato Attuale
-**Obiettivo principale**: Configurare Claude Code per operare in autonomia (zero prompt permessi), integrare GitHub MCP e credenziali, implementare il workflow Handoff/Handon con sincronizzazione intelligente (`/gitpush`) e progettare l'architettura Desktop Multi-Agente ("Idea Automatica").
-**Stato attuale**: ✅ **Tutti i componenti configurati, testati e funzionanti al 100%**.
+**Obiettivo principale**: Sviluppo di MAMBA OS — Sistema Desktop Autonomo Multi-Agente (Orchestratore Antigravity, FreeLLMAPI a costo zero, HUD 3D Verde Smeraldo, User Moves e Claude Code Engine).
+**Stato attuale**: ✅ **Ristrutturazione Monorepo completata; fondamenta e comandi globali attivi**.
 
 ## 2. File Creati o Modificati
 | Data | File | Tipo | Descrizione |
@@ -62,6 +62,15 @@
 | 2026-11-13 | gitpush.ps1 | ps1 | Nuovo file |
 | 2026-11-13 | .claude/sk/ills/handoff/commands/handoff.md | md | Eliminato |
 | 2026-11-13 | .claude/skills/github-automation.md | md | Modificato |
+| 2026-11-13 | ANDOFF.md | md | Git: M  |
+| 2026-11-13 | claude/ | file | Git: ?? |
+| 2026-11-13 | freellmapi/ | file | Git: ?? |
+| 2026-11-13 | handoff.bat | bat | Git: ?? |
+| 2026-11-13 | handoff.ps1 | ps1 | Git: ?? |
+| 2026-11-13 | handon.bat | bat | Git: ?? |
+| 2026-11-13 | handon.ps1 | ps1 | Git: ?? |
+| 2026-11-13 | claude\README.md | md | Creato/Modificato |
+| 2026-11-13 | freellmapi\README.md | md | Creato/Modificato |
 
 ## 3. Decisioni Chiave e Tentativi Scartati
 - Usare skill in `.claude/skills/` invece di plugin globali per maggiore controllo

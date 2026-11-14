@@ -1,0 +1,8 @@
+[shell_environment_policy]
+inherit = "core"
+
+[shell_environment_policy.set]
+PROJECT_ROOT = "${HOME}/mio/mamba"
+HANDOFF_SCRIPT = "${HOME}/mio/mamba/scripts/handoff_generator.py"
+GITHUB_TOKEN = "${GITHUB_TOKEN}"
+CLAUDE_CODE_AUTO_COMPACT_WINDOW = "50000"

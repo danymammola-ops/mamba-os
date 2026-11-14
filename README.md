@@ -83,6 +83,34 @@ mio/mamba/
 
 ---
 
+## ⛽ Prerequisito: Download & Setup FreeLLMAPI
+
+Mamba sfrutta [FreeLLMAPI](https://github.com/tashfeenahmed/freellmapi) come gateway locale per accedere a oltre **100+ modelli AI gratuiti** (Google Gemini, Groq, Cerebras, Mistral, OpenRouter) con failover intelligente e zero costi token.
+
+### 📥 Link Ufficiali di Download
+
+| Piattaforma | Pacchetto / Download Diretto | Istruzioni Rapide |
+|-------------|------------------------------|-------------------|
+| 🪟 **Windows** | [Scarica per Windows (.exe) ↗](https://github.com/tashfeenahmed/freellmapi/releases/latest) | Scarica `FreeLLMAPI-Setup-<versione>.exe` e avvialo (1 clic, nessun permesso admin) |
+| 🍎 **macOS (Apple Silicon)** | [Scarica per Mac M1/M2/M3/M4 (.dmg) ↗](https://github.com/tashfeenahmed/freellmapi/releases/latest) | Scarica il file `-arm64.dmg` e trascina l'icona nella cartella *Applicazioni* |
+| 🍏 **macOS (Intel)** | [Scarica per Mac Intel (.dmg) ↗](https://github.com/tashfeenahmed/freellmapi/releases/latest) | Scarica il file `-x64.dmg` e trascina l'icona nella cartella *Applicazioni* |
+| 🐧 **Linux** | [Releases Ufficiali GitHub ↗](https://github.com/tashfeenahmed/freellmapi/releases/latest) | Disponibili pacchetti `.AppImage` o installazione da sorgenti |
+
+---
+
+### ⚙️ Configurazione in 1 Minuto:
+1. **Avvia FreeLLMAPI**: Comparirà un'icona nella barra di sistema vicino all'orologio (Windows) o nella barra menu (macOS).
+2. **Apri la Dashboard**: Vai nel browser all'indirizzo [http://localhost:3001](http://localhost:3001) (o la porta configurata).
+3. **Inserisci almeno una chiave gratuita**: Nella scheda **Keys**, incolla una o più chiavi API gratuite:
+   * [Google AI Studio (Gemini 2.5/Flash) ↗](https://aistudio.google.com/apikey) *(Consigliatissimo, generoso e velocissimo)*
+   * [Groq Cloud (Llama 3.3 / Mixtral) ↗](https://console.groq.com/keys) *(Ultra-rapido)*
+   * [Cerebras Cloud ↗](https://cloud.cerebras.ai/)
+   * [OpenRouter ↗](https://openrouter.ai/settings/keys)
+   * [Mistral AI Console ↗](https://console.mistral.ai/api-keys)
+4. **Pronto!** Mamba effettua l'**Auto-Discovery automatico**: legge da solo la chiave unificata e la porta dal database SQLite locale (`freeapi.db`) senza che tu debba configurare variabili d'ambiente a mano.
+
+---
+
 ## 📄 Workflow di Sessione & Backup
 
 Questo progetto utilizza il ciclo di sessione a 3 comandi per azzerare il consumo di token e mantenere la repository GitHub come **copia di backup identica del progetto locale**:
@@ -98,7 +126,7 @@ Questo progetto utilizza il ciclo di sessione a 3 comandi per azzerare il consum
 
 ## 📌 Stato del Progetto & Avanzamento (Sincronizzato da HANDOFF.md)
 
-*Ultimo aggiornamento: 2026-11-13 18:13:44*
+*Ultimo aggiornamento: 2026-11-14 16:46:33*
 
 **Obiettivo principale**: Sviluppo di MAMBA OS — Sistema Desktop Autonomo Multi-Agente (Orchestratore Antigravity, FreeLLMAPI a costo zero, HUD 3D Verde Smeraldo, User Moves e Claude Code Engine).  
 **Stato attuale**: ✅ **Ristrutturazione Monorepo completata; fondamenta e comandi globali attivi**.
@@ -106,12 +134,12 @@ Questo progetto utilizza il ciclo di sessione a 3 comandi per azzerare il consum
 ### 📁 Ultimi File Modificati / Rilevati nel Progetto:
 | Data | File | Tipo | Descrizione |
 |------|------|------|-------------|
-| 2026-11-13 | handoff.ps1 | ps1 | Git: ?? |
-| 2026-11-13 | handon.bat | bat | Git: ?? |
-| 2026-11-13 | handon.ps1 | ps1 | Git: ?? |
-| 2026-11-13 | claude\README.md | md | Creato/Modificato |
 | 2026-11-13 | freellmapi\README.md | md | Creato/Modificato |
 | 2026-11-13 | mamba/ | file | Nuovo file |
+| 2026-11-14 | freellmapi/README.md | md | Modificato |
+| 2026-11-14 | .agents/ | agents/ | Nuovo file |
+| 2026-11-14 | .codex/ | codex/ | Nuovo file |
+| 2026-11-14 | AGENTS.md | md | Nuovo file |
 
 ### Checklist Prossimi Passi:
 - [x] Creare repository GitHub e push iniziale

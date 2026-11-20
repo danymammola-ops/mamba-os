@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🐍 MAMBA OS — Neural Desktop HUD</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="scanlines"></div>
+    <div class="vignette"></div>
+
+    <!-- HEADER HUD -->
+    <header>
+        <div class="brand-section">
+            <span class="brand-logo">🐍</span>
+            <div>
+                <div class="brand-title">MAMBA OS</div>
+                <div class="brand-subtitle">NEURAL COGNITIVE DESKTOP HUD v1.0</div>
+            </div>
+        </div>
+
+        <div class="header-telemetry">
+            <div class="badge green">
+                <span class="badge-dot"></span>
+                <span>FREELLM: 0€ TOKEN (300+ MODELLI)</span>
+            </div>
+            <div class="badge">
+                <span>MEMORIA: <b id="token-counter">0</b> / 50.000</span>
+            </div>
+            <div class="badge">
+                <span id="clock-display">17:28:45</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN 3-COLUMN APP GRID -->
+    <main class="main-layout">
+
+        <!-- COLONNA SINISTRA: LIBRERIE & MODULI COLLEGABILI -->
+        <section class="hud-panel">
+            <div class="panel-header">
+                <span class="panel-title">📦 MODULI & LIBRERIE</span>
+                <span class="badge" style="font-size: 9px;">7 ATTIVI</span>
+            </div>
+            <div class="modules-list" id="modules-list">
+                
+                <div class="module-card">
+                    <div class="module-info">
+                        <span class="module-icon">📱</span>
+                        <div>
+                            <div class="module-name">WhatsApp Agent</div>
+                            <div class="module-desc">Safety Gate Verifier Header</div>
+                        </div>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" checked id="mod-whatsapp">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+
+                <div class="module-card">
+                    <div class="module-info">
+                        <span class="module-icon">🎵</span>
+                        <div>
+                            <div class="module-name">Spotify Controller</div>
+                            <div class="module-desc">Processi & Playback Win32</div>
+                        </div>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" checked id="mod-spotify">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+
+                <div class="module-card">
+                    <div class="module-info">
+                        <span class="module-icon">🪟</span>
+                        <div>
+                            <div class="module-name">Window Snapper</div>
+                            <div class="module-desc">Multitasking Split 50/50</div>
+                        </div>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" checked id="mod-snapper">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+
+                <div class="module-card">
+                    <div class="module-info">
+                        <span class="module-icon">⚡</span>
+                        <div>
+                            <div class="module-name">FreeLLMAPI Gateway</div>
+                            <div class="module-desc">Zero Token Router locale</div>
+                        </div>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" checked id="mod-freellm">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+
+                <div class="module-card">
+                    <div class="module-info">
+                        <span class="module-icon">🛠️</span>
+                        <div>
+                            <div class="module-name">Claude Code Bridge</div>
+                            <div class="module-desc">Ingegnere CLI Background</div>
+                        </div>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" checked id="mod-claude">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+
+                <div class="module-card">
+                    <div class="module-info">
+                        <span class="module-icon">🌐</span>
+                        <div>
+                            <div class="module-name">Browser & Meet</div>
+                            <div class="module-desc">Instant Room & Tab Control</div>
+                        </div>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" checked id="mod-browser">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+
+                <div class="module-card">
+                    <div class="module-info">
+                        <span class="module-icon">🛡️</span>
+                        <div>
+                            <div class="module-name">Token Guard 50k</div>
+                            <div class="module-desc">Auto-Compattazione Memoria</div>
+                        </div>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" checked id="mod-tokenguard">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+
+                <div class="module-card" style="border-style: dashed; justify-content: center; opacity: 0.6;">
+                    <span style="font-size: 11px; font-family: var(--font-mono); color: var(--emerald);">+ Aggiungi Nuovo Modulo...</span>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- COLONNA CENTRALE: SERPENTE + RISPOSTA + SEZIONE DI SCRITTURA -->
+        <section class="center-panel">
+            
+            <div class="avatar-container">
+                <canvas id="snake-canvas"></canvas>
+
+                <!-- Box di risposta olografico parlante -->
+                <div class="response-card hidden" id="response-card">
+                    <div class="response-header">
+                        <span>🐍 MAMBA [SPEAKING]</span>
+                        <span id="response-latency">0.42s</span>
+                    </div>
+                    <div class="response-body" id="response-text">
+                        In attesa di ordini...
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sezione di scrittura sotto il serpente -->
+            <div class="input-panel">
+                <div class="input-row">
+                    <input type="text" class="input-box" id="user-input" 
+                           placeholder="Scrivi a Mamba (Zero Token per testo, o automazioni WhatsApp / Finestre / Spotify)..." 
+                           autocomplete="off">
+                    <button class="mic-btn" id="mic-btn" title="Attiva Microfono">🎙️</button>
+                    <button class="action-btn" id="send-btn">INVIA 🚀</button>
+                </div>
+
+                <!-- Chips di comando rapido -->
+                <div class="chips-row">
+                    <span class="chip" onclick="quickSend('Dammi una spiegazione rapida della teoria della relatività')">💡 Relatività (0 Token)</span>
+                    <span class="chip" onclick="quickSend('Traduci in cinese: buona sessione di gioco con GTA 6!')">🇨🇳 Cinese GTA 6</span>
+                    <span class="chip" onclick="quickSend('Manda messaggio a Gabriele Vinted con auguri per GTA 6')">📱 WhatsApp Gabriele</span>
+                    <span class="chip" onclick="quickSend('Affianca Google Meet al 50% dello schermo')">🪟 Meet 50%</span>
+                    <span class="chip" onclick="quickSend('Chiudi Spotify')">🎵 Chiudi Spotify</span>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- COLONNA DESTRA: LOG SELEZIONABILI IN DIRETTA -->
+        <section class="hud-panel">
+            <div class="panel-header">
+                <span class="panel-title">🖥️ CONSOLE LOGS (LIVE)</span>
+                <div>
+                    <button class="log-btn" id="copy-logs-btn" title="Copia tutti i log">📋 Copia</button>
+                    <button class="log-btn" id="clear-logs-btn" title="Pulisci log">🗑️ Pulisci</button>
+                </div>
+            </div>
+            
+            <div class="logs-container" id="logs-container">
+                <!-- Log generati dinamicamente -->
+            </div>
+        </section>
+
+    </main>
+
+    <script src="snake.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

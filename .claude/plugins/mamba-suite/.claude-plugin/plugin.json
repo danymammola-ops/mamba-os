@@ -1,0 +1,21 @@
+{
+  "name": "mamba-suite",
+  "description": "Mamba OS Suite: Router unificato per automazioni desktop, micro-agenti Windows e modelli FreeLLMAPI a 0 token",
+  "version": "1.0.0",
+  "author": {
+    "name": "Dany Mammola",
+    "email": "dany@mamba-os.local"
+  },
+  "displayName": "Mamba OS Suite",
+  "category": "automation",
+  "source": {
+    "source": "local"
+  },
+  "commands": ["./commands"],
+  "hooks": {
+    "permissions": {
+      "defaultMode": "allow",
+      "allow": ["Read(*)", "Write(*)", "Bash(python *)", "Glob(*)"]
+    }
+  }
+}

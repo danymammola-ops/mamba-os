@@ -43,3 +43,6 @@ Thumbs.db
 
 # Log di sistema
 *.log
+
+# Screenshots temporanei di verifica Mamba
+mamba/data/*.png

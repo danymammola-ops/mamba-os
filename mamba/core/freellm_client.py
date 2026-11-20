@@ -41,12 +41,18 @@ def discover_credentials() -> Tuple[str, str]:
     config_path = os.path.join(app_dir, "config.json")
 
     # Leggi porta da config.json se presente
-    port = 31415
+    port = 3001
+    
+    # Check alternate known db path if app_dir doesn't exist
+    alt_db = r"c:\Users\danym\Desktop\Dany\mio\ai\freellmapi\server\data\freeapi.db"
+    if not os.path.exists(db_path) and os.path.exists(alt_db):
+        db_path = alt_db
+
     if os.path.exists(config_path):
         try:
             with open(config_path, "r", encoding="utf-8") as f:
                 cfg = json.load(f)
-                port = int(cfg.get("port") or cfg.get("serverPort") or 31415)
+                port = int(cfg.get("port") or cfg.get("serverPort") or 3001)
         except Exception:
             pass
 

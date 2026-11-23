@@ -33,22 +33,13 @@ class MambaUIHandler(SimpleHTTPRequestHandler):
                 
                 route_info = console.route_request(prompt)
                 rtype = route_info["type"]
-                output_text = ""
-
-                # Esegui in base alla rotta
-                if rtype == "text":
-                    output_text = console.execute(prompt)
-                elif rtype == "whatsapp":
-                    res = console.execute(prompt)
-                    output_text = f"Messaggio inviato su WhatsApp a {res.get('recipient', 'contatto')} in {res.get('elapsed', 0):.2f}s!"
-                elif rtype == "close_app":
-                    res = console.execute(prompt)
-                    output_text = f"Applicazione {res.get('app')} chiusa con successo."
-                elif rtype == "snap_window":
-                    res = console.execute(prompt)
-                    output_text = f"Finestra {res.get('window')} posizionata al 50% con successo."
+                
+                # Esegui il comando
+                res = console.execute(prompt)
+                if isinstance(res, dict):
+                    output_text = res.get("output") or res.get("text") or str(res)
                 else:
-                    output_text = console.execute(prompt) or "Comando elaborato."
+                    output_text = str(res)
 
                 resp = {
                     "success": True,
@@ -62,6 +53,14 @@ class MambaUIHandler(SimpleHTTPRequestHandler):
                     "route": "error"
                 }
 
+            self.send_response(200)
+            self.send_header("Content-Type", "application/json")
+            self.send_header("Access-Control-Allow-Origin", "*")
+            self.end_headers()
+            self.wfile.write(json.dumps(resp).encode('utf-8'))
+        elif self.path == "/api/chat/clear":
+            console.clear_history()
+            resp = {"success": True, "message": "Cronologia chat azzerata."}
             self.send_response(200)
             self.send_header("Content-Type", "application/json")
             self.send_header("Access-Control-Allow-Origin", "*")

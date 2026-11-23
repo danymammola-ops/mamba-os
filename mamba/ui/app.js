@@ -50,7 +50,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     clearLogsBtn.addEventListener('click', () => {
         logsContainer.innerHTML = '';
-        addLog('Console logs pulita.', 'info');
+        if ('speechSynthesis' in window) {
+            window.speechSynthesis.cancel();
+        }
+        snake.setState('idle');
+        fetch('/api/chat/clear', { method: 'POST' }).catch(() => {});
+        addLog('Console logs e memoria chat resettate.', 'info');
     });
 
     // 4. Invio comandi al server backend
@@ -58,6 +63,11 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!prompt || !prompt.trim()) return;
         const text = prompt.trim();
         userInput.value = '';
+
+        // INTERRUZIONE IMMEDIATA VOCE PRECEDENTE
+        if ('speechSynthesis' in window) {
+            window.speechSynthesis.cancel();
+        }
 
         addLog(`TU: "${text}"`, 'info');
         snake.setState('thinking');
@@ -88,10 +98,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 // Se c'è sintesi vocale del browser, parla!
                 if ('speechSynthesis' in window) {
+                    window.speechSynthesis.cancel(); // Sicurezza extra prima di iniziare
                     const utter = new SpeechSynthesisUtterance(data.output);
                     utter.lang = 'it-IT';
                     utter.rate = 1.05;
                     utter.onend = () => snake.setState('idle');
+                    utter.onerror = () => snake.setState('idle');
                     window.speechSynthesis.speak(utter);
                 } else {
                     setTimeout(() => snake.setState('idle'), 3500);
@@ -108,13 +120,20 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    sendBtn.addEventListener('click', () => sendCommand(userInput.value));
+    sendBtn.addEventListener('click', () => {
+        if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+        sendCommand(userInput.value);
+    });
     userInput.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') sendCommand(userInput.value);
+        if (e.key === 'Enter') {
+            if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+            sendCommand(userInput.value);
+        }
     });
 
     // Quick Action Chips
     window.quickSend = function(txt) {
+        if ('speechSynthesis' in window) window.speechSynthesis.cancel();
         sendCommand(txt);
     };
 
@@ -128,6 +147,9 @@ document.addEventListener('DOMContentLoaded', () => {
         recognition.lang = 'it-IT';
 
         recognition.onstart = () => {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+            }
             micBtn.classList.add('active');
             addLog('Ascolto microfono avviato...', 'warn');
             snake.setState('thinking');

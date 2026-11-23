@@ -10,3 +10,4 @@
 | `checkpoint/step-0.9-mamba-hud-app-snake` | 2026-11-20 17:28:40 | Interfaccia Grafica HUD Desktop stile Jarvis con Serpente frontale 60fps, lingua animata, oscillazione vocale, 3 colonne con moduli e log selezionabili |
 | `checkpoint/step-1.0-fix-429-autofast-and-app-launcher` | 2026-11-23 16:35:28 | Risolto bug 429 e timeout con routing auto:fast a 1.07s, cooldown automatico rate limit, e fix percorsi assoluti browser per MAMBA_APP.bat |
 | `checkpoint/step-1.1-mini-pets-and-pills-drawer` | 2026-11-23 16:56:26 | Aggiunto Mini & Pets: pulsante header in alto a destra, drawer impostazioni con 5 skin serpente, pillolette ON/OFF animate stile Codex per WhatsApp/Spotify/Desktop, e desktop_pet.py floating trasparente |
+| `checkpoint/step-1.2-integrated-snake-input-bar` | 2026-11-23 16:58:42 | Barra di input e scrittura integrata direttamente alla base del riquadro centrale del serpente, unificata nell'HUD |

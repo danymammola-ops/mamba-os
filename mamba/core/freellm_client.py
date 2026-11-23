@@ -98,7 +98,7 @@ class FreeLLMClient:
             print(f"⚠️ [Mamba FreeLLM] Errore verifica modelli: {e}")
             return []
 
-    def chat(self, messages: List[Dict[str, str]], model: str = "auto:fast", temperature: float = 0.7, timeout: int = 15) -> Dict[str, Any]:
+    def chat(self, messages: List[Dict[str, str]], model: str = "auto:fast", temperature: float = 0.7, timeout: int = 12, max_tokens: int = 350) -> Dict[str, Any]:
         """
         Invia una richiesta di chat a FreeLLMAPI con failover automatico se lento o in rate-limit (429).
         Restituisce un dizionario con {'content': str, 'provider': str, 'latency': float}.
@@ -113,6 +113,7 @@ class FreeLLMClient:
             "model": model,
             "messages": messages,
             "temperature": temperature,
+            "max_tokens": max_tokens,
             "stream": False
         }
         data = json.dumps(payload).encode("utf-8")
@@ -124,6 +125,8 @@ class FreeLLMClient:
 
         start_time = time.time()
         req = urllib.request.Request(url, data=data, headers=headers, method="POST")
+
+        backup_models = ["google/gemini-2.5-flash", "cloudflare/@cf/qwen/qwen3.8-27b", "meta/llama-3.3-70b-instruct"]
 
         try:
             with urllib.request.urlopen(req, timeout=timeout) as resp:
@@ -143,17 +146,26 @@ class FreeLLMClient:
             # Gestione specifica 429 Too Many Requests
             if e.code == 429:
                 FreeLLMClient._cooldowns[model] = time.time() + 180  # 3 minuti di cooldown
-                print(f"ℹ️ [Mamba FreeLLM] Quota esaurita su '{model}' (429). Routing istantaneo su 'auto:fast'...")
-                if model != "auto:fast":
-                    return self.chat(messages, model="auto:fast", temperature=temperature, timeout=timeout)
-            print(f"⚠️ [Mamba FreeLLM] HTTP {e.code} su {model}. Failover rapido...")
-            if model != "auto:fast":
-                return self.chat(messages, model="auto:fast", temperature=temperature, timeout=timeout)
+                print(f"ℹ️ [Mamba FreeLLM] Quota esaurita su '{model}' (429). Routing istantaneo verso backup...")
+            else:
+                print(f"⚠️ [Mamba FreeLLM] HTTP {e.code} su {model}. Tentativo con modello di riserva...")
+
+            # Failover a cascata
+            for b_model in backup_models:
+                if b_model != model and FreeLLMClient._cooldowns.get(b_model, 0) < now:
+                    try:
+                        return self.chat(messages, model=b_model, temperature=temperature, timeout=10, max_tokens=max_tokens)
+                    except Exception:
+                        continue
             raise e
         except (urllib.error.URLError, TimeoutError) as e:
-            print(f"⚠️ [Mamba FreeLLM] Connessione lenta su {model} ({e}). Failover rapido...")
-            if model != "auto:fast":
-                return self.chat(messages, model="auto:fast", temperature=temperature, timeout=12)
+            print(f"⚠️ [Mamba FreeLLM] Connessione lenta/timeout su {model} ({e}). Tentativo failover ultra-rapido...")
+            for b_model in backup_models:
+                if b_model != model:
+                    try:
+                        return self.chat(messages, model=b_model, temperature=temperature, timeout=8, max_tokens=max_tokens)
+                    except Exception:
+                        continue
             raise e
 
     def stream_chat(self, messages: List[Dict[str, str]], model: str = "auto", temperature: float = 0.7) -> Generator[str, None, None]:

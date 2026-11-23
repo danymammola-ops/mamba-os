@@ -160,4 +160,91 @@ document.addEventListener('DOMContentLoaded', () => {
         micBtn.style.opacity = '0.3';
         micBtn.title = 'Riconoscimento vocale non supportato in questo browser.';
     }
+
+    // ==========================================================================
+    // 6. MINI & PETS SETTINGS (DRAWER & PILLOLETTE TOGGLE)
+    // ==========================================================================
+    const petDrawerBtn = document.getElementById('pet-drawer-btn');
+    const petDrawer = document.getElementById('pet-drawer');
+    const petDrawerOverlay = document.getElementById('pet-drawer-overlay');
+    const drawerCloseBtn = document.getElementById('drawer-close-btn');
+
+    // Inizializza anteprima mini pet
+    const miniPet = new MiniPetPreview('mini-pet-preview-canvas');
+
+    function openPetDrawer() {
+        petDrawer.classList.add('open');
+        petDrawerOverlay.classList.add('open');
+        addLog('Impostazioni Mini & Pets aperte.', 'info');
+    }
+
+    function closePetDrawer() {
+        petDrawer.classList.remove('open');
+        petDrawerOverlay.classList.remove('open');
+    }
+
+    petDrawerBtn.addEventListener('click', openPetDrawer);
+    drawerCloseBtn.addEventListener('click', closePetDrawer);
+    petDrawerOverlay.addEventListener('click', closePetDrawer);
+
+    // Selezione Skin / Specie del Serpente
+    const skinButtons = document.querySelectorAll('.skin-btn');
+    skinButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            skinButtons.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            const skin = btn.getAttribute('data-skin');
+            snake.setSkin(skin);
+            miniPet.setSkin(skin);
+            addLog(`Skin Serpente modificata in: [${skin.toUpperCase()}]`, 'warn');
+
+            // Notifica backend per aggiornare il Desktop Pet fluttuante
+            fetch('/api/pet/config', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ skin: skin })
+            }).catch(() => {});
+        });
+    });
+
+    // Pillolette Switch ON/OFF (Desktop Overlay e App)
+    const pillDesktop = document.getElementById('pill-desktop-overlay');
+    const pillWhatsApp = document.getElementById('pill-whatsapp');
+    const pillSpotify = document.getElementById('pill-spotify');
+    const pillBrowser = document.getElementById('pill-browser');
+    const pillNotepad = document.getElementById('pill-notepad');
+    const pillTongue = document.getElementById('pill-tongue');
+    const pillSway = document.getElementById('pill-sway');
+
+    async function syncPillConfig() {
+        const cfg = {
+            enabled: pillDesktop.checked,
+            show_on_whatsapp: pillWhatsApp.checked,
+            show_on_spotify: pillSpotify.checked,
+            show_on_browser: pillBrowser.checked,
+            show_on_notepad: pillNotepad.checked,
+            animated_tongue: pillTongue.checked,
+            speaking_sway: pillSway.checked
+        };
+        try {
+            await fetch('/api/pet/config', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(cfg)
+            });
+        } catch (e) {}
+    }
+
+    pillDesktop.addEventListener('change', () => {
+        const state = pillDesktop.checked ? 'ATTIVATO' : 'DISATTIVATO';
+        addLog(`Floating Desktop Pet: ${state}`, pillDesktop.checked ? 'info' : 'warn');
+        syncPillConfig();
+    });
+
+    [pillWhatsApp, pillSpotify, pillBrowser, pillNotepad, pillTongue, pillSway].forEach(p => {
+        p.addEventListener('change', () => {
+            addLog(`Impostazione Pet aggiornata: ${p.id.replace('pill-', '')} -> ${p.checked ? 'ON' : 'OFF'}`, 'info');
+            syncPillConfig();
+        });
+    });
 });

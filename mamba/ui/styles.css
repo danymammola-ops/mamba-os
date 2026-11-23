@@ -501,3 +501,285 @@ input:checked + .slider:before {
     color: var(--emerald);
     background: rgba(0, 255, 136, 0.08);
 }
+
+/* ==========================================================================
+   MINI & PETS DRAWER & PILLOLETTE TOGGLES (STILE IMMAGINI CARICATE)
+   ========================================================================== */
+
+/* Pulsante Personaggetto in Header (a destra a tutto) */
+.pet-header-btn {
+    background: rgba(0, 255, 136, 0.08);
+    border: 1px solid var(--emerald);
+    color: var(--emerald);
+    border-radius: 6px;
+    padding: 5px 14px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 0 10px rgba(0, 255, 136, 0.2);
+    transition: all 0.25s ease;
+}
+
+.pet-header-btn:hover {
+    background: var(--emerald);
+    color: #000;
+    box-shadow: 0 0 18px rgba(0, 255, 136, 0.6);
+    transform: scale(1.03);
+}
+
+.pet-pulse-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--emerald);
+    box-shadow: 0 0 8px var(--emerald);
+    animation: blink 1.5s infinite;
+}
+
+/* Overlay scuro di sfondo */
+.pet-drawer-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.65);
+    backdrop-filter: blur(4px);
+    z-index: 200;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+.pet-drawer-overlay.open {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* Cassetto Laterale Destro per le Impostazioni del Pet */
+.pet-drawer {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 380px;
+    height: 100vh;
+    background: rgba(4, 16, 11, 0.96);
+    border-left: 1px solid var(--border-bright);
+    box-shadow: -8px 0 35px rgba(0, 0, 0, 0.8), 0 0 20px rgba(0, 255, 136, 0.15);
+    z-index: 201;
+    display: flex;
+    flex-direction: column;
+    transform: translateX(100%);
+    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    overflow-y: auto;
+}
+
+.pet-drawer.open {
+    transform: translateX(0);
+}
+
+.drawer-header {
+    padding: 18px 20px;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(0, 255, 136, 0.05);
+}
+
+.drawer-title {
+    font-size: 14px;
+    font-family: var(--font-mono);
+    font-weight: 700;
+    color: var(--emerald);
+    letter-spacing: 0.15em;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.drawer-close-btn {
+    background: none;
+    border: none;
+    color: var(--text-dim);
+    font-size: 18px;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.drawer-close-btn:hover {
+    color: var(--emerald);
+}
+
+/* Sezioni interne al Drawer */
+.drawer-section {
+    padding: 16px 20px;
+    border-bottom: 1px solid rgba(0, 255, 136, 0.1);
+}
+
+.drawer-section-title {
+    font-size: 11px;
+    font-family: var(--font-mono);
+    font-weight: 600;
+    color: var(--text-dim);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Playground Anteprima Pet */
+.pet-playground {
+    background: rgba(2, 10, 6, 0.8);
+    border: 1px solid rgba(0, 255, 136, 0.25);
+    border-radius: 8px;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.6);
+}
+
+#mini-pet-preview-canvas {
+    width: 140px;
+    height: 140px;
+    cursor: pointer;
+}
+
+.pet-playground-hint {
+    font-size: 10px;
+    font-family: var(--font-mono);
+    color: var(--emerald-dim);
+    text-align: center;
+}
+
+/* Selettore Specie / Skin del Serpente */
+.skin-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+}
+
+.skin-btn {
+    background: rgba(12, 32, 24, 0.5);
+    border: 1px solid rgba(0, 255, 136, 0.2);
+    border-radius: 6px;
+    padding: 8px 10px;
+    color: #fff;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s;
+}
+
+.skin-btn:hover {
+    border-color: var(--emerald);
+    background: rgba(0, 255, 136, 0.12);
+}
+
+.skin-btn.active {
+    border-color: var(--emerald);
+    background: rgba(0, 255, 136, 0.18);
+    box-shadow: 0 0 10px rgba(0, 255, 136, 0.3);
+    color: var(--emerald);
+    font-weight: 700;
+}
+
+.skin-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    box-shadow: 0 0 6px currentColor;
+}
+
+/* ==========================================================================
+   LE "PILLOLETTE" ON/OFF (ESATTAMENTE COME NELLA FOTO DELL'UTENTE)
+   ========================================================================== */
+.pills-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.pill-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 4px 0;
+}
+
+.pill-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.pill-label {
+    font-size: 12px;
+    font-weight: 500;
+    color: #f0fff8;
+}
+
+.pill-sub {
+    font-size: 10px;
+    font-family: var(--font-mono);
+    color: var(--text-dim);
+}
+
+/* Switch a Pilloletta Smeraldo con bagliore neon intenso */
+.pill-switch {
+    position: relative;
+    display: inline-block;
+    width: 44px;
+    height: 22px;
+    flex-shrink: 0;
+}
+
+.pill-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.pill-slider {
+    position: absolute;
+    cursor: pointer;
+    inset: 0;
+    background-color: #041a10;
+    border: 1.5px solid rgba(0, 255, 136, 0.25);
+    border-radius: 22px;
+    transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.pill-slider:before {
+    position: absolute;
+    content: "";
+    height: 14px;
+    width: 14px;
+    left: 3px;
+    bottom: 2.5px;
+    background-color: #2b503e;
+    border-radius: 50%;
+    transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Stato ACCESO (Identico all'immagine 3 fornita dall'utente) */
+.pill-switch input:checked + .pill-slider {
+    background-color: rgba(0, 48, 28, 0.85);
+    border-color: #00ff88;
+    box-shadow: 0 0 10px rgba(0, 255, 136, 0.35), inset 0 0 6px rgba(0, 255, 136, 0.15);
+}
+
+.pill-switch input:checked + .pill-slider:before {
+    transform: translateX(20px);
+    background-color: #00ff88;
+    box-shadow: 0 0 8px #00ff88, 0 0 16px #00ff88;
+}

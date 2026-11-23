@@ -31,6 +31,11 @@
             <div class="badge">
                 <span id="clock-display">17:28:45</span>
             </div>
+            <button class="pet-header-btn" id="pet-drawer-btn" title="Mini & Pets — Impostazioni Personaggetto">
+                <span>🐍</span>
+                <span>MINI PET</span>
+                <span class="pet-pulse-dot"></span>
+            </button>
         </div>
     </header>
 
@@ -206,6 +211,145 @@
         </section>
 
     </main>
+
+    <!-- OVERLAY & CASSETTO LATERALE MINI & PETS -->
+    <div class="pet-drawer-overlay" id="pet-drawer-overlay"></div>
+    <aside class="pet-drawer" id="pet-drawer">
+        <div class="drawer-header">
+            <span class="drawer-title">🐍 MINI & PETS SETTINGS</span>
+            <button class="drawer-close-btn" id="drawer-close-btn">✕</button>
+        </div>
+
+        <!-- Sezione 1: Anteprima Interattiva Pet -->
+        <div class="drawer-section">
+            <div class="drawer-section-title">✨ ANTEPRIMA PERSONAGGETTO</div>
+            <div class="pet-playground">
+                <canvas id="mini-pet-preview-canvas" width="140" height="140"></canvas>
+                <div class="pet-playground-hint">Passa il mouse per accarezzare o fai click!</div>
+            </div>
+        </div>
+
+        <!-- Sezione 2: Selezione Specie / Skin -->
+        <div class="drawer-section">
+            <div class="drawer-section-title">🎨 SPECIE & SKIN SERPENTE</div>
+            <div class="skin-grid" id="skin-grid">
+                <button class="skin-btn active" data-skin="emerald">
+                    <span class="skin-dot" style="background: #00ff88; color: #00ff88;"></span>
+                    <span>Emerald Viper</span>
+                </button>
+                <button class="skin-btn" data-skin="cyber">
+                    <span class="skin-dot" style="background: #c77dff; color: #c77dff;"></span>
+                    <span>Cyber Python</span>
+                </button>
+                <button class="skin-btn" data-skin="golden">
+                    <span class="skin-dot" style="background: #ffb703; color: #ffb703;"></span>
+                    <span>Golden Cobra</span>
+                </button>
+                <button class="skin-btn" data-skin="crimson">
+                    <span class="skin-dot" style="background: #ff0055; color: #ff0055;"></span>
+                    <span>Crimson Mamba</span>
+                </button>
+                <button class="skin-btn" data-skin="mecha" style="grid-column: span 2;">
+                    <span class="skin-dot" style="background: #00f0ff; color: #00f0ff;"></span>
+                    <span>Mecha Robo-Snake</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Sezione 3: Pillolette ON/OFF (App & Visibilità) -->
+        <div class="drawer-section">
+            <div class="drawer-section-title">📱 MOSTRA SULLE APP (PILLOLETTE ON/OFF)</div>
+            <div class="pills-list">
+                
+                <div class="pill-row">
+                    <div class="pill-info">
+                        <div class="pill-label">Floating Pet su Desktop</div>
+                        <div class="pill-sub">Overlay fluttuante e trascinabile a schermo</div>
+                    </div>
+                    <label class="pill-switch">
+                        <input type="checkbox" checked id="pill-desktop-overlay">
+                        <span class="pill-slider"></span>
+                    </label>
+                </div>
+
+                <div class="pill-row">
+                    <div class="pill-info">
+                        <div class="pill-label">Mostra su WhatsApp</div>
+                        <div class="pill-sub">Galleggia sopra la finestra di WhatsApp</div>
+                    </div>
+                    <label class="pill-switch">
+                        <input type="checkbox" checked id="pill-whatsapp">
+                        <span class="pill-slider"></span>
+                    </label>
+                </div>
+
+                <div class="pill-row">
+                    <div class="pill-info">
+                        <div class="pill-label">Mostra su Spotify</div>
+                        <div class="pill-sub">Reagisce alla musica e a Spotify</div>
+                    </div>
+                    <label class="pill-switch">
+                        <input type="checkbox" checked id="pill-spotify">
+                        <span class="pill-slider"></span>
+                    </label>
+                </div>
+
+                <div class="pill-row">
+                    <div class="pill-info">
+                        <div class="pill-label">Mostra su Browser / Meet</div>
+                        <div class="pill-sub">Accompagna le sessioni di navigazione</div>
+                    </div>
+                    <label class="pill-switch">
+                        <input type="checkbox" checked id="pill-browser">
+                        <span class="pill-slider"></span>
+                    </label>
+                </div>
+
+                <div class="pill-row">
+                    <div class="pill-info">
+                        <div class="pill-label">Mostra su Blocco Note</div>
+                        <div class="pill-sub">Presente durante la scrittura di testo</div>
+                    </div>
+                    <label class="pill-switch">
+                        <input type="checkbox" checked id="pill-notepad">
+                        <span class="pill-slider"></span>
+                    </label>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Sezione 4: Pillolette Comportamento & Animazioni -->
+        <div class="drawer-section">
+            <div class="drawer-section-title">⚡ COMPORTAMENTO & ANIMAZIONI</div>
+            <div class="pills-list">
+                
+                <div class="pill-row">
+                    <div class="pill-info">
+                        <div class="pill-label">Lingua Biforcuta Dinamica</div>
+                        <div class="pill-sub">Guizza fuori a intervalli regolari</div>
+                    </div>
+                    <label class="pill-switch">
+                        <input type="checkbox" checked id="pill-tongue">
+                        <span class="pill-slider"></span>
+                    </label>
+                </div>
+
+                <div class="pill-row">
+                    <div class="pill-info">
+                        <div class="pill-label">Oscillazione Vocale (Sway)</div>
+                        <div class="pill-sub">Ondeggia da destra a sinistra mentre parla</div>
+                    </div>
+                    <label class="pill-switch">
+                        <input type="checkbox" checked id="pill-sway">
+                        <span class="pill-slider"></span>
+                    </label>
+                </div>
+
+            </div>
+        </div>
+
+    </aside>
 
     <script src="snake.js"></script>
     <script src="app.js"></script>

@@ -9,10 +9,20 @@
  * - Respiro lento e particelle olografiche reattive
  */
 
+const SNAKE_SKINS = {
+    emerald: { primary: '#00ff88', dark: '#042e1d', body: '#07482e', eye: '#00ff88', pupil: '#020b06', tongue: '#00ffaa', glow: '#00ff88' },
+    cyber:   { primary: '#c77dff', dark: '#240046', body: '#3c096c', eye: '#e0aaff', pupil: '#10002b', tongue: '#ff5400', glow: '#c77dff' },
+    golden:  { primary: '#ffb703', dark: '#3d2600', body: '#5a3a00', eye: '#ffe066', pupil: '#1a1000', tongue: '#ff0055', glow: '#ffb703' },
+    crimson: { primary: '#ff0055', dark: '#3a0014', body: '#5c0022', eye: '#ff5488', pupil: '#1a0009', tongue: '#ffbe0b', glow: '#ff0055' },
+    mecha:   { primary: '#00f0ff', dark: '#002b36', body: '#003b46', eye: '#00f0ff', pupil: '#001015', tongue: '#ff007f', glow: '#00f0ff' }
+};
+
 class MambaSnake {
     constructor(canvasId) {
         this.canvas = document.getElementById(canvasId);
         this.ctx = this.canvas.getContext('2d');
+        this.skinKey = 'emerald';
+        this.skin = SNAKE_SKINS.emerald;
         this.resize();
         window.addEventListener('resize', () => this.resize());
 
@@ -55,6 +65,13 @@ class MambaSnake {
     setState(state, audioLevel = 0) {
         this.state = state;
         this.audioIntensity = audioLevel;
+    }
+
+    setSkin(skinName) {
+        if (SNAKE_SKINS[skinName]) {
+            this.skinKey = skinName;
+            this.skin = SNAKE_SKINS[skinName];
+        }
     }
 
     animate(timestamp) {
@@ -135,8 +152,9 @@ class MambaSnake {
             if (p.y < -150) p.y = 150;
             if (p.y > 150) p.y = -150;
 
-            this.ctx.fillStyle = `rgba(0, 255, 136, ${p.alpha * 0.6})`;
-            this.ctx.shadowColor = '#00ff88';
+            this.ctx.fillStyle = this.skin.primary;
+            this.ctx.globalAlpha = p.alpha * 0.5;
+            this.ctx.shadowColor = this.skin.glow;
             this.ctx.shadowBlur = 8;
             this.ctx.beginPath();
             this.ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
@@ -148,9 +166,10 @@ class MambaSnake {
     drawEnergyWaves() {
         this.ctx.save();
         const pulse = (Math.sin(this.time * 10) + 1) * 0.5;
-        this.ctx.strokeStyle = `rgba(0, 255, 136, ${0.15 + pulse * 0.25})`;
+        this.ctx.strokeStyle = this.skin.primary;
+        this.ctx.globalAlpha = 0.15 + pulse * 0.25;
         this.ctx.lineWidth = 1.5;
-        this.ctx.shadowColor = '#00ff88';
+        this.ctx.shadowColor = this.skin.glow;
         this.ctx.shadowBlur = 12;
 
         for (let r of [110, 135, 160]) {
@@ -165,34 +184,32 @@ class MambaSnake {
         const ctx = this.ctx;
         ctx.save();
 
-        // Gradiente corpo smeraldo olografico
         const grad = ctx.createLinearGradient(0, -60, 0, 120);
-        grad.addColorStop(0, '#042e1d');
-        grad.addColorStop(0.5, '#07482e');
-        grad.addColorStop(1, '#02180f');
+        grad.addColorStop(0, this.skin.dark);
+        grad.addColorStop(0.5, this.skin.body);
+        grad.addColorStop(1, '#020b06');
 
         ctx.fillStyle = grad;
-        ctx.strokeStyle = '#00ff88';
+        ctx.strokeStyle = this.skin.primary;
         ctx.lineWidth = 2;
-        ctx.shadowColor = '#00ff88';
+        ctx.shadowColor = this.skin.glow;
         ctx.shadowBlur = 15;
 
         // Silhouette del cappuccio espanso del cobra (frontale simmetrico)
         ctx.beginPath();
         ctx.moveTo(0, -50); // Cima testa
-        // Lato destro cappuccio
         ctx.bezierCurveTo(45, -45, 105, -20, 110, 25);
         ctx.bezierCurveTo(115, 65, 70, 95, 35, 120);
         ctx.lineTo(-35, 120);
-        // Lato sinistro cappuccio
         ctx.bezierCurveTo(-70, 95, -115, 65, -110, 25);
         ctx.bezierCurveTo(-105, -20, -45, -45, 0, -50);
         ctx.closePath();
         ctx.fill();
         ctx.stroke();
 
-        // Linee olografiche delle scaglie interne del cappuccio
-        ctx.strokeStyle = 'rgba(0, 255, 136, 0.35)';
+        // Linee olografiche delle scaglie interne
+        ctx.strokeStyle = this.skin.primary;
+        ctx.globalAlpha = 0.35;
         ctx.lineWidth = 1;
         ctx.shadowBlur = 4;
         for (let y = -20; y <= 90; y += 18) {
@@ -204,7 +221,7 @@ class MambaSnake {
         }
 
         // Colonna vertebrale centrale
-        ctx.strokeStyle = 'rgba(0, 255, 136, 0.7)';
+        ctx.globalAlpha = 0.7;
         ctx.lineWidth = 1.5;
         ctx.beginPath();
         ctx.moveTo(0, -45);
@@ -218,25 +235,25 @@ class MambaSnake {
         const ctx = this.ctx;
         ctx.save();
 
-        // Sagoma frontale della testa (triangolare affilata mamba)
-        ctx.fillStyle = '#062d1c';
-        ctx.strokeStyle = '#00ff88';
+        ctx.fillStyle = this.skin.body;
+        ctx.strokeStyle = this.skin.primary;
         ctx.lineWidth = 2.5;
-        ctx.shadowColor = '#00ff88';
+        ctx.shadowColor = this.skin.glow;
         ctx.shadowBlur = 20;
 
         ctx.beginPath();
-        ctx.moveTo(0, -65); // Naso frontale
-        ctx.bezierCurveTo(28, -60, 48, -40, 44, -10); // Mascella destra
-        ctx.bezierCurveTo(40, 15, 20, 25, 0, 30);      // Mento
-        ctx.bezierCurveTo(-20, 25, -40, 15, -44, -10); // Mascella sinistra
+        ctx.moveTo(0, -65);
+        ctx.bezierCurveTo(28, -60, 48, -40, 44, -10);
+        ctx.bezierCurveTo(40, 15, 20, 25, 0, 30);
+        ctx.bezierCurveTo(-20, 25, -40, 15, -44, -10);
         ctx.bezierCurveTo(-48, -40, -28, -60, 0, -65);
         ctx.closePath();
         ctx.fill();
         ctx.stroke();
 
-        // Piastre e scaglie sulla fronte frontale
-        ctx.strokeStyle = 'rgba(0, 255, 136, 0.6)';
+        // Scaglie fronte
+        ctx.strokeStyle = this.skin.primary;
+        ctx.globalAlpha = 0.6;
         ctx.lineWidth = 1.2;
         ctx.beginPath();
         ctx.moveTo(0, -65);
@@ -244,7 +261,8 @@ class MambaSnake {
         ctx.stroke();
 
         // Narici
-        ctx.fillStyle = '#00ff88';
+        ctx.fillStyle = this.skin.primary;
+        ctx.globalAlpha = 1.0;
         ctx.shadowBlur = 5;
         ctx.beginPath();
         ctx.ellipse(-6, -55, 2, 4, -0.2, 0, Math.PI * 2);
@@ -252,7 +270,8 @@ class MambaSnake {
         ctx.fill();
 
         // Linea bocca frontale
-        ctx.strokeStyle = 'rgba(0, 255, 136, 0.8)';
+        ctx.strokeStyle = this.skin.primary;
+        ctx.globalAlpha = 0.8;
         ctx.lineWidth = 1.5;
         ctx.beginPath();
         ctx.moveTo(-16, 12);
@@ -271,29 +290,24 @@ class MambaSnake {
         const eyeWidth = 10;
         const eyeHeight = 16;
 
-        // Bagliore esterno occhi
-        ctx.shadowColor = '#00ff88';
+        ctx.shadowColor = this.skin.glow;
         ctx.shadowBlur = 25;
-        ctx.fillStyle = '#00ff88';
+        ctx.fillStyle = this.skin.eye;
 
-        // Occhio Destro & Sinistro
         for (let side of [-1, 1]) {
             const ex = side * eyeOffsetX;
             const ey = eyeOffsetY;
 
-            // Sclera verde smeraldo brillante
             ctx.beginPath();
             ctx.ellipse(ex, ey, eyeWidth, eyeHeight, side * 0.35, 0, Math.PI * 2);
-            ctx.fillStyle = '#00ff88';
+            ctx.fillStyle = this.skin.eye;
             ctx.fill();
 
-            // Pupilla a fessura verticale nera da rettile
             ctx.beginPath();
             ctx.ellipse(ex, ey, 2.2, eyeHeight * 0.85, side * 0.1, 0, Math.PI * 2);
-            ctx.fillStyle = '#020b06';
+            ctx.fillStyle = this.skin.pupil;
             ctx.fill();
 
-            // Riflesso brillante nell'angolo
             ctx.beginPath();
             ctx.arc(ex - side * 2, ey - 4, 1.8, 0, Math.PI * 2);
             ctx.fillStyle = '#ffffff';
@@ -307,25 +321,22 @@ class MambaSnake {
         const ctx = this.ctx;
         ctx.save();
 
-        // Posizione bocca
         const startY = 16;
         const length = 38 + Math.abs(this.tongueFlick) * 12;
         const forkSpread = 9 + this.tongueFlick * 4;
 
-        ctx.strokeStyle = '#00ffaa';
-        ctx.fillStyle = '#00ffaa';
-        ctx.shadowColor = '#00ff88';
+        ctx.strokeStyle = this.skin.tongue;
+        ctx.fillStyle = this.skin.tongue;
+        ctx.shadowColor = this.skin.glow;
         ctx.shadowBlur = 10;
         ctx.lineWidth = 2.2;
         ctx.lineCap = 'round';
 
-        // Base della lingua che esce dal mento
         ctx.beginPath();
         ctx.moveTo(0, startY);
         ctx.lineTo(this.tongueFlick * 2, startY + length * 0.65);
         ctx.stroke();
 
-        // Biforcazione sinistra e destra
         const splitY = startY + length * 0.65;
         const tipY = startY + length;
 
@@ -343,4 +354,104 @@ class MambaSnake {
     }
 }
 
+/**
+ * MiniPetPreview - Canvas interattivo all'interno del drawer delle impostazioni
+ */
+class MiniPetPreview {
+    constructor(canvasId) {
+        this.canvas = document.getElementById(canvasId);
+        if (!this.canvas) return;
+        this.ctx = this.canvas.getContext('2d');
+        this.skinKey = 'emerald';
+        this.skin = SNAKE_SKINS.emerald;
+        this.time = 0;
+        this.isHovered = false;
+        this.isClicked = false;
+
+        this.canvas.addEventListener('mouseenter', () => this.isHovered = true);
+        this.canvas.addEventListener('mouseleave', () => { this.isHovered = false; this.isClicked = false; });
+        this.canvas.addEventListener('mousedown', () => {
+            this.isClicked = true;
+            setTimeout(() => this.isClicked = false, 600);
+        });
+
+        this.animate = this.animate.bind(this);
+        requestAnimationFrame(this.animate);
+    }
+
+    setSkin(skinName) {
+        if (SNAKE_SKINS[skinName]) {
+            this.skinKey = skinName;
+            this.skin = SNAKE_SKINS[skinName];
+        }
+    }
+
+    animate(timestamp) {
+        this.time = timestamp * 0.001;
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+        const cx = this.canvas.width / 2;
+        const cy = this.canvas.height / 2 + 5;
+
+        const sway = Math.sin(this.time * (this.isHovered ? 6 : 2)) * (this.isHovered ? 12 : 5);
+        const breathe = Math.sin(this.time * 3) * 3;
+        const jump = this.isClicked ? -10 : 0;
+
+        this.ctx.save();
+        this.ctx.translate(cx + sway, cy + breathe + jump);
+
+        // Cappuccio
+        this.ctx.fillStyle = this.skin.dark;
+        this.ctx.strokeStyle = this.skin.primary;
+        this.ctx.lineWidth = 1.5;
+        this.ctx.shadowColor = this.skin.glow;
+        this.ctx.shadowBlur = 10;
+        this.ctx.beginPath();
+        this.ctx.ellipse(0, 0, 36, 42, 0, 0, Math.PI * 2);
+        this.ctx.fill();
+        this.ctx.stroke();
+
+        // Testa
+        this.ctx.fillStyle = this.skin.body;
+        this.ctx.beginPath();
+        this.ctx.ellipse(0, -5, 20, 26, 0, 0, Math.PI * 2);
+        this.ctx.fill();
+        this.ctx.stroke();
+
+        // Lingua se hover o click
+        if (this.isHovered || this.isClicked || (this.time % 3.0 > 0.4 && this.time % 3.0 < 1.0)) {
+            const flick = Math.sin(this.time * 25) * 3;
+            this.ctx.strokeStyle = this.skin.tongue;
+            this.ctx.lineWidth = 1.8;
+            this.ctx.beginPath();
+            this.ctx.moveTo(0, 20);
+            this.ctx.lineTo(flick, 36);
+            this.ctx.lineTo(-4 + flick, 42);
+            this.ctx.moveTo(flick, 36);
+            this.ctx.lineTo(4 + flick, 42);
+            this.ctx.stroke();
+        }
+
+        // Occhi
+        for (let s of [-1, 1]) {
+            this.ctx.fillStyle = this.skin.eye;
+            this.ctx.shadowColor = this.skin.glow;
+            this.ctx.shadowBlur = 6;
+            this.ctx.beginPath();
+            this.ctx.ellipse(s * 9, -8, 4, 6, s * 0.2, 0, Math.PI * 2);
+            this.ctx.fill();
+
+            this.ctx.fillStyle = this.skin.pupil;
+            this.ctx.beginPath();
+            this.ctx.ellipse(s * 9, -8, 1, 5, 0, 0, Math.PI * 2);
+            this.ctx.fill();
+        }
+
+        this.ctx.restore();
+        requestAnimationFrame(this.animate);
+    }
+}
+
 window.MambaSnake = MambaSnake;
+window.MiniPetPreview = MiniPetPreview;
+window.SNAKE_SKINS = SNAKE_SKINS;

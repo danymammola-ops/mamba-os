@@ -67,6 +67,39 @@ class MambaUIHandler(SimpleHTTPRequestHandler):
             self.send_header("Access-Control-Allow-Origin", "*")
             self.end_headers()
             self.wfile.write(json.dumps(resp).encode('utf-8'))
+        elif self.path == "/api/pet/config":
+            content_length = int(self.headers.get('Content-Length', 0))
+            post_data = self.rfile.read(content_length).decode('utf-8')
+            try:
+                new_cfg = json.loads(post_data)
+                cfg_file = os.path.join(UI_DIR, "pet_config.json")
+                cur_cfg = {}
+                if os.path.exists(cfg_file):
+                    try:
+                        with open(cfg_file, "r", encoding="utf-8") as f:
+                            cur_cfg = json.load(f)
+                    except Exception:
+                        pass
+                cur_cfg.update(new_cfg)
+                with open(cfg_file, "w", encoding="utf-8") as f:
+                    json.dump(cur_cfg, f, indent=2)
+
+                # Gestione processo Desktop Pet fluttuante
+                if cur_cfg.get("enabled", True):
+                    # Se abilitato, avvia desktop_pet.py se non già attivo
+                    import subprocess
+                    pet_script = os.path.join(UI_DIR, "desktop_pet.py")
+                    subprocess.Popen([sys.executable, pet_script], creationflags=0x00000008) # DETACHED_PROCESS
+
+                resp = {"success": True, "config": cur_cfg}
+            except Exception as e:
+                resp = {"success": False, "error": str(e)}
+
+            self.send_response(200)
+            self.send_header("Content-Type", "application/json")
+            self.send_header("Access-Control-Allow-Origin", "*")
+            self.end_headers()
+            self.wfile.write(json.dumps(resp).encode('utf-8'))
         else:
             self.send_error(404, "Endpoint not found")
 

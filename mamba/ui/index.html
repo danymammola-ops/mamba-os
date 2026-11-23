@@ -155,8 +155,12 @@
             </div>
         </section>
 
-        <!-- COLONNA CENTRALE: SERPENTE + RISPOSTA + SEZIONE DI SCRITTURA -->
-        <section class="center-panel">
+        <!-- COLONNA CENTRALE: RIQUADRO UNIFICATO DEL SERPENTE CON BARRA DI SCRITTURA SOTTO -->
+        <section class="hud-panel center-panel">
+            <div class="panel-header">
+                <span class="panel-title">🐍 CORE OLOGRAFICO (60 FPS)</span>
+                <span class="badge green" id="snake-status-badge">ONLINE</span>
+            </div>
             
             <div class="avatar-container">
                 <canvas id="snake-canvas"></canvas>
@@ -164,7 +168,7 @@
                 <!-- Box di risposta olografico parlante -->
                 <div class="response-card hidden" id="response-card">
                     <div class="response-header">
-                        <span>🐍 MAMBA [SPEAKING]</span>
+                        <span>🐍 MAMBA [RISPOSTA]</span>
                         <span id="response-latency">0.42s</span>
                     </div>
                     <div class="response-body" id="response-text">
@@ -173,11 +177,11 @@
                 </div>
             </div>
 
-            <!-- Sezione di scrittura sotto il serpente -->
-            <div class="input-panel">
+            <!-- BARRA DI SCRITTURA INTEGRATA SOTTO NEL RIQUADRO CENTRALE -->
+            <div class="snake-input-section">
                 <div class="input-row">
                     <input type="text" class="input-box" id="user-input" 
-                           placeholder="Scrivi a Mamba (Zero Token per testo, o automazioni WhatsApp / Finestre / Spotify)..." 
+                           placeholder="Scrivi qui a Mamba (0 Token per risposte/traduzioni, o comandi WhatsApp / Finestre)..." 
                            autocomplete="off">
                     <button class="mic-btn" id="mic-btn" title="Attiva Microfono">🎙️</button>
                     <button class="action-btn" id="send-btn">INVIA 🚀</button>
@@ -192,7 +196,6 @@
                     <span class="chip" onclick="quickSend('Chiudi Spotify')">🎵 Chiudi Spotify</span>
                 </div>
             </div>
-
         </section>
 
         <!-- COLONNA DESTRA: LOG SELEZIONABILI IN DIRETTA -->

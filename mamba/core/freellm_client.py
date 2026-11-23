@@ -75,6 +75,8 @@ def discover_credentials() -> Tuple[str, str]:
     return base_url.rstrip("/"), api_key
 
 class FreeLLMClient:
+    _cooldowns = {}  # {model_name: timestamp_until_cooldown_ends}
+
     def __init__(self, base_url: Optional[str] = None, api_key: Optional[str] = None):
         discovered_url, discovered_key = discover_credentials()
         self.base_url = (base_url or discovered_url).rstrip("/")
@@ -96,11 +98,17 @@ class FreeLLMClient:
             print(f"⚠️ [Mamba FreeLLM] Errore verifica modelli: {e}")
             return []
 
-    def chat(self, messages: List[Dict[str, str]], model: str = "auto", temperature: float = 0.7, timeout: int = 15) -> Dict[str, Any]:
+    def chat(self, messages: List[Dict[str, str]], model: str = "auto:fast", temperature: float = 0.7, timeout: int = 15) -> Dict[str, Any]:
         """
-        Invia una richiesta di chat a FreeLLMAPI con failover automatico se lento.
+        Invia una richiesta di chat a FreeLLMAPI con failover automatico se lento o in rate-limit (429).
         Restituisce un dizionario con {'content': str, 'provider': str, 'latency': float}.
         """
+        now = time.time()
+        # Se il modello richiesto è in cooldown (es. per errore 429), passa subito ad 'auto:fast'
+        if model != "auto:fast" and model in FreeLLMClient._cooldowns:
+            if now < FreeLLMClient._cooldowns[model]:
+                model = "auto:fast"
+
         payload = {
             "model": model,
             "messages": messages,
@@ -131,9 +139,19 @@ class FreeLLMClient:
                     "latency": self.last_latency,
                     "raw": body
                 }
+        except urllib.error.HTTPError as e:
+            # Gestione specifica 429 Too Many Requests
+            if e.code == 429:
+                FreeLLMClient._cooldowns[model] = time.time() + 180  # 3 minuti di cooldown
+                print(f"ℹ️ [Mamba FreeLLM] Quota esaurita su '{model}' (429). Routing istantaneo su 'auto:fast'...")
+                if model != "auto:fast":
+                    return self.chat(messages, model="auto:fast", temperature=temperature, timeout=timeout)
+            print(f"⚠️ [Mamba FreeLLM] HTTP {e.code} su {model}. Failover rapido...")
+            if model != "auto:fast":
+                return self.chat(messages, model="auto:fast", temperature=temperature, timeout=timeout)
+            raise e
         except (urllib.error.URLError, TimeoutError) as e:
-            print(f"⚠️ [Mamba FreeLLM] Modello {model} lento o non raggiungibile ({e}). Failover su 'auto:fast'...")
-            # Fallback immediato su auto:fast
+            print(f"⚠️ [Mamba FreeLLM] Connessione lenta su {model} ({e}). Failover rapido...")
             if model != "auto:fast":
                 return self.chat(messages, model="auto:fast", temperature=temperature, timeout=12)
             raise e

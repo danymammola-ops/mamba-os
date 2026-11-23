@@ -105,7 +105,7 @@ class MambaConsole:
                     {"role": "system", "content": system_instruction},
                     {"role": "user", "content": user_prompt}
                 ]
-                res = self.freellm.chat(messages, model="gemini-flash-lite", temperature=0.7)
+                res = self.freellm.chat(messages, model="auto:fast", temperature=0.7)
                 elapsed = time.time() - t0
                 
                 print(f"{EMERALD}{BOLD}\n🐍 Mamba:{RESET}\n{res['content'].strip()}\n")
@@ -127,7 +127,7 @@ class MambaConsole:
             # Genera il messaggio tramite FreeLLMAPI
             print(f" -> Generazione testo messaggio tramite FreeLLMAPI...")
             gen_prompt = f"Scrivi un messaggio breve e simpatico per {recipient}: {user_prompt}"
-            msg_res = self.freellm.chat([{"role": "user", "content": gen_prompt}], model="gemini-flash-lite")
+            msg_res = self.freellm.chat([{"role": "user", "content": gen_prompt}], model="auto:fast")
             final_message = msg_res['content'].strip()
             
             print(f" -> Messaggio preparato per {recipient}.")

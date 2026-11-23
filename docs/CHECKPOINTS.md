@@ -7,3 +7,4 @@
 | `checkpoint/step-0.6-whatsapp-automation` | 2026-11-17 13:04:40 | Automazione reale WhatsApp Desktop: Ricerca contatto Stefano, inserimento testo con emoji serpente 🐍 e caratteri cinesi, invio e verifica visiva a 4.7s |
 | `checkpoint/step-0.7-whatsapp-mamma-verified` | 2026-11-17 13:39:37 | Invio messaggio affettuoso alla Mamma con Closed-Loop Vision Verification |
 | `checkpoint/step-0.8-mamba-console-router` | 2026-11-20 16:54:06 | Console di Collegamento, Smart Router FreeLLM 0 token, Verifier Safety Gate e Plugin Claude Code |
+| `checkpoint/step-0.9-mamba-hud-app-snake` | 2026-11-20 17:28:40 | Interfaccia Grafica HUD Desktop stile Jarvis con Serpente frontale 60fps, lingua animata, oscillazione vocale, 3 colonne con moduli e log selezionabili |

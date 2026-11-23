@@ -79,7 +79,13 @@ class MambaUIHandler(SimpleHTTPRequestHandler):
 
 def run_server(port=5173):
     server_address = ("127.0.0.1", port)
-    httpd = HTTPServer(server_address, MambaUIHandler)
+    try:
+        httpd = HTTPServer(server_address, MambaUIHandler)
+    except OSError as e:
+        # Se la porta è già aperta e occupata dal server precedente
+        print(f"ℹ️ [MAMBA OS HUD] Il server è già attivo e in ascolto su: http://127.0.0.1:{port}")
+        return
+
     print(f"\n🐍 [MAMBA OS HUD] Server avviato con successo su: http://127.0.0.1:{port}")
     print(f"👉 Apri il browser all'indirizzo sopra per interagire con l'App HUD!")
     try:

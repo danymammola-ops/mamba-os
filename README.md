@@ -1,15 +1,15 @@
-# 🐍 Mamba — Autonomous Multi-Agent Desktop OS
+# 🐍 Mamba OS v2.0 — Autonomous Multi-Agent & Second Brain Cockpit
 
 <p align="center">
-  <b>L'assistente desktop autonomo multi-agente per Windows.</b><br>
-  <i>Orchestrato da Antigravity · Ologramma 3D Verde Smeraldo · Voce Neurale · Automazione Desktop "User Moves" · Claude Code Engine</i>
+  <b>Il sistema operativo cognitivo personale per Windows 11.</b><br>
+  <i>Neural Glassmorphism Cockpit · Pixel Mamba Slither · Galaxy 3D Second Brain (SQLite FTS5) · Voce Neurale Edge-TTS con Coda · Claude Code & Terminal Bridge · Codex-Style MiniPet</i>
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Theme-Emerald%20Viper%20Green-00ff88?style=for-the-badge" alt="Theme">
+  <img src="https://img.shields.io/badge/Version-2.0%20Neural%20Cockpit-00ff88?style=for-the-badge" alt="Version">
   <img src="https://img.shields.io/badge/Cost-100%25%20Free%20(FreeLLMAPI)-05d672?style=for-the-badge" alt="Cost">
-  <img src="https://img.shields.io/badge/OS-Windows%2011%20%2F%2010-008037?style=for-the-badge" alt="OS">
-  <img src="https://img.shields.io/badge/AutoCompact-50k%20Tokens-00ff66?style=for-the-badge" alt="AutoCompact">
+  <img src="https://img.shields.io/badge/Second%20Brain-Obsidian%20FTS5%20%2B%20Galaxy%203D-22d3ee?style=for-the-badge" alt="Second Brain">
+  <img src="https://img.shields.io/badge/Voice-Edge--TTS%20Neural%20Queue-a855f7?style=for-the-badge" alt="Voice">
 </p>
 
 ---
@@ -45,14 +45,14 @@ flowchart TD
 
 ---
 
-## 🌟 Caratteristiche Principali
+## 🌟 Caratteristiche Principali (v2.0)
 
-* 🐍 **Ologramma 3D Emerald Viper**: Interfaccia olografica fluida in Three.js con un orb particellare verde smeraldo e rete neurale che illumina le sinapsi in tempo reale durante il ragionamento.
-* 🎙️ **Pipeline Vocale Nativa**: Attivazione vocale con *«Ciao Mamba»*, anti-eco automatico mentre parla, interruzione istantanea con *«Stop»* e voce neurale italiana via Microsoft Edge-TTS gratuita.
-* 🛡️ **Auto-Compact 50k Token Guard**: Monitoraggio del contesto in tempo reale; al raggiungimento di 50.000 token, compattazione automatica e persistenza per sessioni infinite senza rallentamenti.
-* 🖱️ **User Moves (Desktop Automation)**: Integrazione rapida con WhatsApp Desktop (deep-link istantaneo `whatsapp://send`), gestione delle finestre Windows e simulazione mouse con fail-safe di sicurezza.
-* 💻 **Claude Code Engine**: Braccio di programmazione autonomo per creare file, lanciare test e mantenere la repository sincronizzata via Git.
-* 🔄 **Ciclo di Sessione Universale**: Comandi nativi eseguibili in qualsiasi terminale: `./handoff`, `./handon`, `./gitpush`.
+* 👾 **Pixel Mamba Snake (60 FPS)**: Cobra pixelato frontale in `idle`, **serpente pixelato che striscia velocemente da sinistra a destra** quando elabora/scrive un prompt, ed equalizzatore audio reale quando parla.
+* 🌌 **Galaxy 3D & Secondo Cervello Integrato (`brain_bridge.py`)**: Vista Galassia 3D interattiva integrata nell'HUD, ricerca istantanea `<20ms` SQLite FTS5 su ObsidianVault (`Contesto`, `Progetti`, `Decisioni ADR`, `Diario`) e Nightly Brain Gardener.
+* 🔊 **Voce Neurale Italiana con Coda Non-Interrompente (`mamba/voice/tts_engine.py`)**: Edge-TTS (`Giuseppe`, `Diego`, `Isabella`, `Elsa`) con cache locale e coda audio che finisce sempre di leggere la risposta precedente prima di leggere la successiva.
+* 🐾 **Codex-Style Mini & Pets (`desktop_pet.py`)**: Personaggetto desktop hot-reload single-instance configurabile per stile (`Pixel Viper` / `Classic`), dimensione, opacità, 5 skin e visibilità per singola app Windows.
+* 🛠️ **Claude Code & Terminal Bridge + GitHub Sync**: Esecuzione diretta di Claude Code CLI (arricchito dal Secondo Cervello), PowerShell, apertura app/URL e stato/push GitHub 1-click dall'HUD.
+* 🛡️ **Auto-Compact 50k Token Guard & User Moves**: Compattazione automatica sincronizzata col Vault + automazione desktop con Safety Gate.
 
 ---
 

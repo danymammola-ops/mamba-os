@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌌 MAMBA SECOND BRAIN — Galaxy View 3D</title>
+    <style>
+        :root {
+            --bg-space: #03060a;
+            --panel-glass: rgba(8, 16, 24, 0.76);
+            --border-glass: rgba(0, 255, 136, 0.22);
+            --emerald: #00ff88;
+            --cyan: #22d3ee;
+            --text: #e6f4f1;
+            --muted: #7f9bb0;
+            --font-sans: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            --font-mono: 'Cascadia Mono', 'Consolas', monospace;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        html, body {
+            width: 100%; height: 100%; overflow: hidden;
+            background: radial-gradient(circle at 50% 45%, #071422 0%, #03060a 68%, #010204 100%);
+            color: var(--text);
+            font-family: var(--font-sans);
+            user-select: none;
+        }
+        canvas#galaxy-canvas {
+            position: fixed; inset: 0; width: 100%; height: 100%;
+            cursor: grab;
+            z-index: 1;
+        }
+        canvas#galaxy-canvas:active { cursor: grabbing; }
+
+        /* TOP GLASS BAR */
+        .top-hud {
+            position: fixed; top: 14px; left: 16px; right: 16px;
+            z-index: 10;
+            display: flex; align-items: center; justify-content: space-between;
+            gap: 12px; pointer-events: none;
+        }
+        .hud-cluster {
+            display: flex; align-items: center; gap: 10px;
+            background: var(--panel-glass);
+            border: 1px solid var(--border-glass);
+            backdrop-filter: blur(14px);
+            border-radius: 14px;
+            padding: 8px 14px;
+            pointer-events: auto;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
+        }
+        .brand {
+            display: flex; align-items: center; gap: 8px;
+            font-weight: 700; letter-spacing: 0.14em; font-size: 13px;
+            color: var(--emerald);
+            text-shadow: 0 0 12px rgba(0, 255, 136, 0.45);
+        }
+        .back-link {
+            text-decoration: none;
+            font-size: 12px; font-family: var(--font-mono);
+            color: #a7f3d0;
+            background: rgba(0, 255, 136, 0.10);
+            border: 1px solid rgba(0, 255, 136, 0.28);
+            padding: 5px 10px; border-radius: 8px;
+            transition: all 0.2s;
+        }
+        .back-link:hover { background: rgba(0, 255, 136, 0.22); color: #fff; }
+        .stats-pill {
+            font-family: var(--font-mono); font-size: 11px; color: var(--muted);
+        }
+        .stats-pill b { color: var(--cyan); }
+
+        .search-input {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            border-radius: 9px;
+            color: var(--text);
+            padding: 6px 12px;
+            font-size: 12px;
+            width: 230px;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .search-input:focus {
+            border-color: var(--emerald);
+            box-shadow: 0 0 12px rgba(0, 255, 136, 0.22);
+        }
+        .hud-btn {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            color: var(--text);
+            padding: 6px 10px;
+            border-radius: 8px;
+            font-size: 11px;
+            font-family: var(--font-mono);
+            cursor: pointer;
+            transition: all 0.18s;
+        }
+        .hud-btn:hover { border-color: var(--emerald); color: var(--emerald); }
+        .hud-btn.active {
+            background: rgba(0, 255, 136, 0.16);
+            border-color: var(--emerald);
+            color: var(--emerald);
+        }
+        .hud-btn.capture-btn {
+            background: linear-gradient(135deg, rgba(0,255,136,0.22), rgba(34,211,238,0.22));
+            border-color: rgba(0,255,136,0.45);
+            color: #fff; font-weight: 600;
+        }
+
+        /* FILTER PILLS BAR */
+        .filter-bar {
+            position: fixed; bottom: 16px; left: 16px;
+            z-index: 10;
+            display: flex; flex-wrap: wrap; gap: 6px;
+            max-width: calc(100vw - 440px);
+            background: var(--panel-glass);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(12px);
+            padding: 8px 12px;
+            border-radius: 14px;
+        }
+        .filter-pill {
+            display: inline-flex; align-items: center; gap: 6px;
+            font-size: 11px; font-family: var(--font-mono);
+            padding: 4px 10px; border-radius: 999px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.10);
+            color: var(--muted); cursor: pointer;
+            transition: all 0.18s;
+        }
+        .filter-pill:hover { color: #fff; border-color: rgba(255, 255, 255, 0.3); }
+        .filter-pill.active {
+            color: #fff;
+            background: rgba(255, 255, 255, 0.12);
+            border-color: var(--pill-color, var(--emerald));
+            box-shadow: 0 0 10px rgba(0, 255, 136, 0.18);
+        }
+        .dot {
+            width: 8px; height: 8px; border-radius: 50%;
+            background: var(--pill-color, var(--emerald));
+            box-shadow: 0 0 8px var(--pill-color, var(--emerald));
+        }
+
+        /* HOVER TOOLTIP */
+        .tooltip {
+            position: fixed; z-index: 20; pointer-events: none;
+            background: rgba(6, 13, 20, 0.92);
+            border: 1px solid rgba(0, 255, 136, 0.4);
+            backdrop-filter: blur(10px);
+            padding: 10px 14px; border-radius: 10px;
+            max-width: 290px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.65);
+            opacity: 0; transform: translateY(4px);
+            transition: opacity 0.12s, transform 0.12s;
+        }
+        .tooltip.visible { opacity: 1; transform: translateY(0); }
+        .tooltip-title { font-size: 13px; font-weight: 700; color: #fff; margin-bottom: 4px; }
+        .tooltip-meta { font-size: 11px; font-family: var(--font-mono); color: var(--cyan); margin-bottom: 4px; }
+        .tooltip-sum { font-size: 11px; color: var(--muted); line-height: 1.35; }
+
+        /* RIGHT INSPECTOR DRAWER */
+        .inspector {
+            position: fixed; top: 74px; right: 16px; bottom: 16px;
+            width: 400px; max-width: calc(100vw - 32px);
+            z-index: 15;
+            background: rgba(7, 14, 22, 0.88);
+            border: 1px solid rgba(0, 255, 136, 0.28);
+            backdrop-filter: blur(18px);
+            border-radius: 16px;
+            display: flex; flex-direction: column;
+            box-shadow: 0 16px 48px rgba(0, 0, 0, 0.65);
+            transform: translateX(440px);
+            transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+            user-select: text;
+        }
+        .inspector.open { transform: translateX(0); }
+        .insp-header {
+            padding: 14px 16px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            display: flex; align-items: flex-start; justify-content: space-between; gap: 10px;
+        }
+        .insp-title { font-size: 15px; font-weight: 700; color: #fff; line-height: 1.3; }
+        .insp-path { font-size: 11px; font-family: var(--font-mono); color: var(--muted); margin-top: 3px; word-break: break-all; }
+        .insp-actions {
+            display: flex; gap: 8px; padding: 10px 16px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        }
+        .insp-body {
+            padding: 14px 16px;
+            overflow-y: auto; flex: 1;
+            font-size: 13px; line-height: 1.55; color: #cbd5e1;
+        }
+        .insp-body h1, .insp-body h2, .insp-body h3 {
+            color: var(--emerald); margin: 12px 0 6px; font-size: 14px;
+        }
+        .insp-body p { margin-bottom: 8px; }
+        .insp-body ul { padding-left: 18px; margin-bottom: 10px; }
+        .insp-body code {
+            font-family: var(--font-mono); font-size: 11.5px;
+            background: rgba(0,255,136,0.1); color: #6ee7b7; padding: 1px 5px; border-radius: 4px;
+        }
+        .wikilink-chip {
+            display: inline-block;
+            color: var(--cyan);
+            background: rgba(34, 211, 238, 0.12);
+            border: 1px solid rgba(34, 211, 238, 0.28);
+            border-radius: 6px;
+            padding: 1px 6px;
+            font-size: 11.5px;
+            cursor: pointer;
+            margin: 1px 2px;
+            transition: all 0.15s;
+        }
+        .wikilink-chip:hover { background: rgba(34, 211, 238, 0.28); color: #fff; }
+        .neighbors-box {
+            padding: 10px 16px 14px;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            max-height: 150px; overflow-y: auto;
+        }
+        .neighbors-label {
+            font-size: 10px; font-family: var(--font-mono);
+            text-transform: uppercase; letter-spacing: 0.1em;
+            color: var(--muted); margin-bottom: 6px;
+        }
+
+        /* CAPTURE MODAL */
+        .modal-backdrop {
+            position: fixed; inset: 0; z-index: 30;
+            background: rgba(2, 6, 12, 0.7); backdrop-filter: blur(6px);
+            display: none; align-items: center; justify-content: center;
+        }
+        .modal-backdrop.open { display: flex; }
+        .modal-card {
+            width: 440px; max-width: 92vw;
+            background: #0a131d;
+            border: 1px solid rgba(0, 255, 136, 0.35);
+            border-radius: 16px; padding: 18px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.8);
+        }
+        .modal-card h3 { color: var(--emerald); margin-bottom: 10px; font-size: 15px; }
+        .modal-textarea {
+            width: 100%; height: 100px; resize: vertical;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 10px; color: #fff; padding: 10px;
+            font-family: var(--font-sans); font-size: 13px; margin-bottom: 12px;
+            outline: none;
+        }
+        .modal-textarea:focus { border-color: var(--emerald); }
+        .modal-footer { display: flex; justify-content: flex-end; gap: 8px; }
+    </style>
+</head>
+<body>
+    <canvas id="galaxy-canvas"></canvas>
+
+    <!-- TOP BAR -->
+    <div class="top-hud">
+        <div class="hud-cluster">
+            <a href="/" id="back-hud-link" class="back-link">🐍 Mamba HUD</a>
+            <div class="brand">🌌 GALAXY VIEW</div>
+            <div class="stats-pill" id="stats-pill">Caricamento...</div>
+        </div>
+
+        <div class="hud-cluster">
+            <input type="text" id="search-box" class="search-input" placeholder="🔍 Cerca stella, progetto, concetto..." autocomplete="off">
+            <button class="hud-btn active" id="btn-orbit" title="Attiva/Pausa rotazione 3D">▶ Orbita</button>
+            <button class="hud-btn active" id="btn-pulses" title="Impulsi sinaptici sulle connessioni">⚡ Impulsi</button>
+            <button class="hud-btn" id="btn-reset" title="Centra camera">↺ Reset</button>
+            <button class="hud-btn capture-btn" id="btn-capture">+ Cattura</button>
+        </div>
+    </div>
+
+    <!-- BOTTOM LAYER FILTERS -->
+    <div class="filter-bar" id="filter-bar"></div>
+
+    <!-- HOVER TOOLTIP -->
+    <div class="tooltip" id="tooltip">
+        <div class="tooltip-title" id="tt-title"></div>
+        <div class="tooltip-meta" id="tt-meta"></div>
+        <div class="tooltip-sum" id="tt-sum"></div>
+    </div>
+
+    <!-- SIDE INSPECTOR -->
+    <aside class="inspector" id="inspector">
+        <div class="insp-header">
+            <div>
+                <div class="insp-title" id="insp-title">Nota</div>
+                <div class="insp-path" id="insp-path"></div>
+            </div>
+            <button class="hud-btn" id="insp-close">✕</button>
+        </div>
+        <div class="insp-actions">
+            <a id="insp-obsidian-btn" class="back-link" href="#">📂 Apri in Obsidian</a>
+            <button id="insp-focus-btn" class="hud-btn">🎯 Centra Stella</button>
+        </div>
+        <div class="insp-body" id="insp-body"></div>
+        <div class="neighbors-box">
+            <div class="neighbors-label">Connessioni Sinaptiche</div>
+            <div id="insp-neighbors"></div>
+        </div>
+    </aside>
+
+    <!-- QUICK CAPTURE MODAL -->
+    <div class="modal-backdrop" id="capture-modal">
+        <div class="modal-card">
+            <h3>✨ Nuova Stella nel Secondo Cervello</h3>
+            <textarea id="capture-text" class="modal-textarea" placeholder="Scrivi un'idea, appunto o link da salvare subito nella 00_Inbox..."></textarea>
+            <div class="modal-footer">
+                <button class="hud-btn" id="capture-cancel">Annulla</button>
+                <button class="hud-btn capture-btn" id="capture-save">Salva & Accendi Stella 🚀</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        if (new URLSearchParams(window.location.search).get("embed") === "1") {
+            const bl = document.getElementById("back-hud-link");
+            if (bl) bl.style.display = "none";
+        }
+    </script>
+    <script src="galaxy.js"></script>
+</body>
+</html>

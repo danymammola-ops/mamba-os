@@ -103,6 +103,11 @@ class TokenGuard:
             if mode == "w":
                 f.write("# 🧠 MAMBA-MEMORIA.md - Memoria Persistente di Mamba OS\n\nMemoria continua auto-compattata dal Token Guard a 50k tokens.\n")
             f.write(entry)
+        try:
+            from brain_bridge import BrainBridge
+            BrainBridge().sync_compaction_to_vault(summary_text)
+        except Exception:
+            pass
 
 if __name__ == "__main__":
     guard = TokenGuard(max_tokens=100) # Soglia bassa per test

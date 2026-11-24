@@ -3,358 +3,329 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🐍 MAMBA OS — Neural Desktop HUD</title>
+    <title>🐍 MAMBA OS 2.0 — Neural Cockpit</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="scanlines"></div>
-    <div class="vignette"></div>
+<div class="app-shell">
 
-    <!-- HEADER HUD -->
-    <header>
-        <div class="brand-section">
-            <span class="brand-logo">🐍</span>
+    <!-- TOP COMMAND BAR -->
+    <header class="topbar">
+        <div class="brand">
+            <div class="brand-orb">🐍</div>
             <div>
-                <div class="brand-title">MAMBA OS</div>
-                <div class="brand-subtitle">NEURAL COGNITIVE DESKTOP HUD v1.0</div>
+                <div class="brand-name">MAMBA OS</div>
+                <div class="brand-sub">NEURAL COCKPIT v2.0</div>
             </div>
         </div>
 
-        <div class="header-telemetry">
-            <div class="badge green">
-                <span class="badge-dot"></span>
-                <span>FREELLM: 0€ TOKEN (300+ MODELLI)</span>
+        <nav class="nav-tabs" id="nav-tabs">
+            <button class="nav-tab active" data-view="view-core">🐍 Neural Core</button>
+            <button class="nav-tab" data-view="view-galaxy">🌌 Galaxy 3D</button>
+            <button class="nav-tab" data-view="view-brain">🧠 Cervello</button>
+            <button class="nav-tab" data-view="view-claude">💻 Claude & Terminale</button>
+        </nav>
+
+        <div class="top-actions">
+            <div class="pill-badge" id="badge-freellm" title="Gateway FreeLLMapi">
+                <span class="pill-dot" id="dot-freellm"></span>
+                <span id="txt-freellm">FreeLLM</span>
             </div>
-            <div class="badge">
-                <span>MEMORIA: <b id="token-counter">0</b> / 50.000</span>
+            <div class="pill-badge clickable" id="badge-brain" title="Vai al Secondo Cervello">
+                <span class="pill-dot"></span>
+                <span id="txt-brain">Brain --</span>
             </div>
-            <div class="badge">
-                <span id="clock-display">17:28:45</span>
+            <div class="pill-badge clickable" id="badge-github" title="Stato GitHub mamba-os">
+                <span class="pill-dot warn" id="dot-github"></span>
+                <span id="txt-github">GitHub</span>
             </div>
-            <button class="pet-header-btn" id="pet-drawer-btn" title="Mini & Pets — Impostazioni Personaggetto">
-                <span>🐍</span>
-                <span>MINI PET</span>
-                <span class="pet-pulse-dot"></span>
-            </button>
+            <select id="voice-select" class="voice-select" title="Voce Neurale Italiana">
+                <option value="it-IT-GiuseppeMultilingualNeural">🔊 Giuseppe</option>
+                <option value="it-IT-DiegoNeural">🔊 Diego</option>
+                <option value="it-IT-IsabellaNeural">🔊 Isabella</option>
+                <option value="it-IT-ElsaNeural">🔊 Elsa</option>
+            </select>
+            <button class="icon-btn accent" id="btn-voice-toggle" title="Attiva/Disattiva sintesi vocale">🔊 ON</button>
+            <button class="icon-btn danger" id="btn-voice-stop" title="Interrompi manualmente la voce" style="display:none;">⏹ Stop</button>
+            <button class="icon-btn" id="btn-open-pet">🐍 Mini & Pets</button>
         </div>
     </header>
 
-    <!-- MAIN 3-COLUMN APP GRID -->
-    <main class="main-layout">
+    <!-- MAIN VIEWS -->
+    <main class="views-wrapper">
 
-        <!-- COLONNA SINISTRA: LIBRERIE & MODULI COLLEGABILI -->
-        <section class="hud-panel">
-            <div class="panel-header">
-                <span class="panel-title">📦 MODULI & LIBRERIE</span>
-                <span class="badge" style="font-size: 9px;">7 ATTIVI</span>
-            </div>
-            <div class="modules-list" id="modules-list">
-                
-                <div class="module-card">
-                    <div class="module-info">
-                        <span class="module-icon">📱</span>
+        <!-- ================================================================
+             TAB 1: NEURAL CORE (PIXEL SNAKE + CHAT + DOCK)
+             ================================================================ -->
+        <section class="view-pane active" id="view-core">
+            <div class="core-grid">
+
+                <!-- LEFT: QUICK LAUNCH & ROUTER MODES -->
+                <section class="glass-panel">
+                    <div class="panel-head">
+                        <span>⚡ COMANDO RAPIDO</span>
+                        <span id="clock-display" style="color:var(--emerald)">00:00:00</span>
+                    </div>
+                    <div class="dock-body">
                         <div>
-                            <div class="module-name">WhatsApp Agent</div>
-                            <div class="module-desc">Safety Gate Verifier Header</div>
+                            <div class="dock-label">Modalità Risposta</div>
+                            <div class="mode-pills" id="mode-pills">
+                                <button class="mode-pill active" data-mode="auto">🤖 Auto Smart</button>
+                                <button class="mode-pill" data-mode="claude">🛠️ Claude Code</button>
+                                <button class="mode-pill" data-mode="brain">🧠 Solo Cervello</button>
+                                <button class="mode-pill" data-mode="terminal">💻 Terminale</button>
+                            </div>
+                        </div>
+
+                        <div>
+                            <div class="dock-label">Apri Applicazioni & Tool</div>
+                            <div class="launch-grid">
+                                <button class="launch-btn" onclick="launchApp('obsidian')">🟣 Obsidian</button>
+                                <button class="launch-btn" onclick="launchApp('code')">🟦 VS Code</button>
+                                <button class="launch-btn" onclick="launchApp('terminal')">⬛ Terminale</button>
+                                <button class="launch-btn" onclick="launchApp('whatsapp')">🟢 WhatsApp</button>
+                                <button class="launch-btn" onclick="launchApp('spotify')">🎵 Spotify</button>
+                                <button class="launch-btn" onclick="launchApp('github')">🐙 GitHub</button>
+                                <button class="launch-btn" onclick="launchApp('freellmapi')">⛽ FreeLLM</button>
+                                <button class="launch-btn" onclick="launchApp('vault')">📁 Vault</button>
+                            </div>
+                        </div>
+
+                        <div>
+                            <div class="dock-label">Sistemi Interconnessi</div>
+                            <div class="status-list">
+                                <div class="status-item"><span>Voice Engine</span><span>Edge-TTS Neural</span></div>
+                                <div class="status-item"><span>Voice Queue</span><span>Non-Interrupting</span></div>
+                                <div class="status-item"><span>Second Brain</span><span id="dock-brain-stat">FTS5 Live</span></div>
+                                <div class="status-item"><span>Claude Bridge</span><span>CLI + Brain</span></div>
+                                <div class="status-item"><span>Safety Gate</span><span>Attivo</span></div>
+                            </div>
                         </div>
                     </div>
-                    <label class="switch">
-                        <input type="checkbox" checked id="mod-whatsapp">
-                        <span class="slider"></span>
-                    </label>
-                </div>
+                </section>
 
-                <div class="module-card">
-                    <div class="module-info">
-                        <span class="module-icon">🎵</span>
-                        <div>
-                            <div class="module-name">Spotify Controller</div>
-                            <div class="module-desc">Processi & Playback Win32</div>
+                <!-- CENTER: PIXEL SNAKE STAGE + CHAT THREAD + INPUT -->
+                <section class="glass-panel center-stage">
+                    <div class="snake-stage">
+                        <canvas id="snake-canvas"></canvas>
+                        <div class="snake-state-badge" id="snake-state-badge">● IDLE // READY</div>
+                        <div class="voice-queue-pill" id="voice-queue-pill">🔊 Coda voce: 0</div>
+                    </div>
+
+                    <div class="chat-feed" id="chat-feed">
+                        <div class="msg assistant">
+                            <div class="msg-meta">
+                                <span class="msg-route">MAMBA OS 2.0</span>
+                                <span>Connesso al Secondo Cervello, Claude Code & Voce Neurale</span>
+                            </div>
+                            <div class="msg-text">Ciao Dany! Tutto interconnesso: scrivimi qualsiasi cosa, chiedi a Claude Code di aprire o modificare file, naviga la Galaxy 3D o usa il Secondo Cervello. Se mandi un altro prompt mentre parlo, finisco prima di leggere quello precedente.</div>
                         </div>
                     </div>
-                    <label class="switch">
-                        <input type="checkbox" checked id="mod-spotify">
-                        <span class="slider"></span>
-                    </label>
-                </div>
 
-                <div class="module-card">
-                    <div class="module-info">
-                        <span class="module-icon">🪟</span>
-                        <div>
-                            <div class="module-name">Window Snapper</div>
-                            <div class="module-desc">Multitasking Split 50/50</div>
+                    <div class="input-dock">
+                        <div class="input-row">
+                            <input type="text" id="user-input" class="prompt-input" placeholder="Scrivi un prompt, un comando per Claude Code, o 'Ricorda che...' (Enter per inviare)" autocomplete="off">
+                            <button class="icon-btn" id="mic-btn" title="Parla con il microfono">🎙️</button>
+                            <button class="send-btn" id="send-btn">INVIA 🚀</button>
+                        </div>
+                        <div class="chips-row">
+                            <span class="chip" onclick="quickSend('Stato second brain')">🧠 Stato Cervello</span>
+                            <span class="chip" onclick="quickSend('Apri Obsidian')">🟣 Apri Obsidian</span>
+                            <span class="chip" onclick="quickSend('Riassumimi i miei progetti attivi dal Secondo Cervello')">🚀 Miei Progetti</span>
+                            <span class="chip" onclick="quickSend('Claude controlla git status in mamba')">🛠️ Claude Git Status</span>
+                            <span class="chip" onclick="quickSend('Affianca Chrome al 50% a sinistra')">🪟 Snap 50%</span>
                         </div>
                     </div>
-                    <label class="switch">
-                        <input type="checkbox" checked id="mod-snapper">
-                        <span class="slider"></span>
-                    </label>
-                </div>
+                </section>
 
-                <div class="module-card">
-                    <div class="module-info">
-                        <span class="module-icon">⚡</span>
-                        <div>
-                            <div class="module-name">FreeLLMAPI Gateway</div>
-                            <div class="module-desc">Zero Token Router locale</div>
+                <!-- RIGHT: LIVE TELEMETRY LOGS -->
+                <section class="glass-panel">
+                    <div class="panel-head">
+                        <span>📡 TELEMETRIA LIVE</span>
+                        <div style="display:flex;gap:6px;">
+                            <button class="icon-btn" id="btn-copy-logs" style="padding:3px 7px;font-size:10px;">📋</button>
+                            <button class="icon-btn" id="btn-clear-chat" style="padding:3px 7px;font-size:10px;" title="Azzera chat & log">🗑️</button>
                         </div>
                     </div>
-                    <label class="switch">
-                        <input type="checkbox" checked id="mod-freellm">
-                        <span class="slider"></span>
-                    </label>
-                </div>
-
-                <div class="module-card">
-                    <div class="module-info">
-                        <span class="module-icon">🛠️</span>
-                        <div>
-                            <div class="module-name">Claude Code Bridge</div>
-                            <div class="module-desc">Ingegnere CLI Background</div>
-                        </div>
-                    </div>
-                    <label class="switch">
-                        <input type="checkbox" checked id="mod-claude">
-                        <span class="slider"></span>
-                    </label>
-                </div>
-
-                <div class="module-card">
-                    <div class="module-info">
-                        <span class="module-icon">🌐</span>
-                        <div>
-                            <div class="module-name">Browser & Meet</div>
-                            <div class="module-desc">Instant Room & Tab Control</div>
-                        </div>
-                    </div>
-                    <label class="switch">
-                        <input type="checkbox" checked id="mod-browser">
-                        <span class="slider"></span>
-                    </label>
-                </div>
-
-                <div class="module-card">
-                    <div class="module-info">
-                        <span class="module-icon">🛡️</span>
-                        <div>
-                            <div class="module-name">Token Guard 50k</div>
-                            <div class="module-desc">Auto-Compattazione Memoria</div>
-                        </div>
-                    </div>
-                    <label class="switch">
-                        <input type="checkbox" checked id="mod-tokenguard">
-                        <span class="slider"></span>
-                    </label>
-                </div>
-
-                <div class="module-card" style="border-style: dashed; justify-content: center; opacity: 0.6;">
-                    <span style="font-size: 11px; font-family: var(--font-mono); color: var(--emerald);">+ Aggiungi Nuovo Modulo...</span>
-                </div>
+                    <div class="logs-feed" id="logs-container"></div>
+                </section>
 
             </div>
         </section>
 
-        <!-- COLONNA CENTRALE: RIQUADRO UNIFICATO DEL SERPENTE CON BARRA DI SCRITTURA SOTTO -->
-        <section class="hud-panel center-panel">
-            <div class="panel-header">
-                <span class="panel-title">🐍 CORE OLOGRAFICO (60 FPS)</span>
-                <span class="badge green" id="snake-status-badge">ONLINE</span>
-            </div>
-            
-            <div class="avatar-container">
-                <canvas id="snake-canvas"></canvas>
+        <!-- ================================================================
+             TAB 2: INTEGRATED GALAXY 3D VIEW
+             ================================================================ -->
+        <section class="view-pane" id="view-galaxy">
+            <iframe id="galaxy-iframe" class="galaxy-frame" src="about:blank" title="Galaxy View 3D"></iframe>
+        </section>
 
-                <!-- Box di risposta olografico parlante -->
-                <div class="response-card hidden" id="response-card">
-                    <div class="response-header">
-                        <span>🐍 MAMBA [RISPOSTA]</span>
-                        <span id="response-latency">0.42s</span>
+        <!-- ================================================================
+             TAB 3: SECOND BRAIN EXPLORER & CAPTURE
+             ================================================================ -->
+        <section class="view-pane" id="view-brain">
+            <div class="split-2">
+                <section class="glass-panel">
+                    <div class="panel-head">
+                        <span>🔍 RICERCA ISTANTANEA FTS5 (<20ms)</span>
+                        <button class="icon-btn accent" id="btn-run-gardener" style="padding:4px 9px;font-size:11px;">🌙 Lancia Gardener</button>
                     </div>
-                    <div class="response-body" id="response-text">
-                        In attesa di ordini...
+                    <div class="panel-body">
+                        <div style="display:flex;gap:8px;">
+                            <input type="text" id="brain-search-input" class="field-input" placeholder="Cerca concetti, esami Federico II, decisioni, Mamba...">
+                            <button class="send-btn" id="btn-brain-search" style="padding:9px 14px;">Cerca</button>
+                        </div>
+                        <div id="brain-search-results" style="display:flex;flex-direction:column;gap:8px;overflow-y:auto;"></div>
                     </div>
-                </div>
-            </div>
+                </section>
 
-            <!-- BARRA DI SCRITTURA INTEGRATA SOTTO NEL RIQUADRO CENTRALE -->
-            <div class="snake-input-section">
-                <div class="input-row">
-                    <input type="text" class="input-box" id="user-input" 
-                           placeholder="Scrivi qui a Mamba (0 Token per risposte/traduzioni, o comandi WhatsApp / Finestre)..." 
-                           autocomplete="off">
-                    <button class="mic-btn" id="mic-btn" title="Attiva Microfono">🎙️</button>
-                    <button class="action-btn" id="send-btn">INVIA 🚀</button>
-                </div>
-
-                <!-- Chips di comando rapido -->
-                <div class="chips-row">
-                    <span class="chip" onclick="quickSend('Dammi una spiegazione rapida della teoria della relatività')">💡 Relatività (0 Token)</span>
-                    <span class="chip" onclick="quickSend('Traduci in cinese: buona sessione di gioco con GTA 6!')">🇨🇳 Cinese GTA 6</span>
-                    <span class="chip" onclick="quickSend('Manda messaggio a Gabriele Vinted con auguri per GTA 6')">📱 WhatsApp Gabriele</span>
-                    <span class="chip" onclick="quickSend('Affianca Google Meet al 50% dello schermo')">🪟 Meet 50%</span>
-                    <span class="chip" onclick="quickSend('Chiudi Spotify')">🎵 Chiudi Spotify</span>
-                </div>
+                <section class="glass-panel">
+                    <div class="panel-head">
+                        <span>📥 CATTURA RAPIDA & DIARIO</span>
+                        <a href="obsidian://open?vault=ObsidianVault" class="icon-btn" style="padding:4px 9px;font-size:11px;text-decoration:none;">🟣 Apri Vault</a>
+                    </div>
+                    <div class="panel-body">
+                        <div class="dock-label">Salva Idea / Nota in 00_Inbox/</div>
+                        <input type="text" id="cap-title" class="field-input" placeholder="Titolo breve (es. Idea esame Calcolatori)">
+                        <textarea id="cap-body" class="field-textarea" placeholder="Contenuto, appunti o link..."></textarea>
+                        <div style="display:flex;gap:8px;">
+                            <button class="send-btn" id="btn-cap-inbox" style="flex:1;">📥 Salva in Inbox</button>
+                            <button class="icon-btn accent" id="btn-cap-daily" style="flex:1;justify-content:center;">📅 Aggiungi al Diario di Oggi</button>
+                        </div>
+                        <div class="dock-label" style="margin-top:8px;">Output Gardener / Stato</div>
+                        <div class="term-output" id="brain-ops-output" style="min-height:130px;">Pronto.</div>
+                    </div>
+                </section>
             </div>
         </section>
 
-        <!-- COLONNA DESTRA: LOG SELEZIONABILI IN DIRETTA -->
-        <section class="hud-panel">
-            <div class="panel-header">
-                <span class="panel-title">🖥️ CONSOLE LOGS (LIVE)</span>
-                <div>
-                    <button class="log-btn" id="copy-logs-btn" title="Copia tutti i log">📋 Copia</button>
-                    <button class="log-btn" id="clear-logs-btn" title="Pulisci log">🗑️ Pulisci</button>
-                </div>
-            </div>
-            
-            <div class="logs-container" id="logs-container">
-                <!-- Log generati dinamicamente -->
+        <!-- ================================================================
+             TAB 4: CLAUDE CODE + TERMINAL + GITHUB SYNC
+             ================================================================ -->
+        <section class="view-pane" id="view-claude">
+            <div class="split-2">
+                <section class="glass-panel">
+                    <div class="panel-head">
+                        <span>💻 CLAUDE CODE & POWERSHELL BRIDGE</span>
+                        <select id="term-engine" class="voice-select">
+                            <option value="claude">🤖 Claude Code (con Secondo Cervello)</option>
+                            <option value="terminal">⚡ PowerShell Diretto</option>
+                        </select>
+                    </div>
+                    <div class="panel-body">
+                        <div style="display:flex;gap:8px;">
+                            <input type="text" id="term-input" class="field-input" placeholder="Es. 'controlla errori in console.py' oppure 'git status'">
+                            <button class="send-btn" id="btn-term-run" style="padding:9px 16px;">Esegui</button>
+                        </div>
+                        <div class="chips-row">
+                            <span class="chip" onclick="runQuickTerm('terminal', 'git status --short')">git status</span>
+                            <span class="chip" onclick="runQuickTerm('terminal', 'brain status')">brain status</span>
+                            <span class="chip" onclick="runQuickTerm('claude', 'Analizza i file modificati in mamba-os e verifica che non ci siano bug')">Claude Check Repo</span>
+                            <span class="chip" onclick="runQuickTerm('terminal', 'start obsidian://open?vault=ObsidianVault')">Apri Obsidian</span>
+                        </div>
+                        <div class="term-output" id="term-output">Pronto per eseguire comandi Claude Code e PowerShell...</div>
+                    </div>
+                </section>
+
+                <section class="glass-panel">
+                    <div class="panel-head">
+                        <span>🐙 GITHUB REPO SYNC (mamba-os)</span>
+                        <button class="icon-btn" id="btn-gh-refresh" style="padding:4px 9px;font-size:11px;">↻ Aggiorna</button>
+                    </div>
+                    <div class="panel-body">
+                        <div id="gh-status-box" class="term-output" style="max-height:240px;">Caricamento stato GitHub...</div>
+                        <input type="text" id="gh-commit-msg" class="field-input" placeholder="Messaggio commit (opzionale, auto-generato se vuoto)">
+                        <button class="send-btn" id="btn-gh-push">🚀 Commit & Push su GitHub Ora</button>
+                        <div id="gh-push-out" class="term-output" style="min-height:110px;">In attesa...</div>
+                    </div>
+                </section>
             </div>
         </section>
 
     </main>
+</div>
 
-    <!-- OVERLAY & CASSETTO LATERALE MINI & PETS -->
-    <div class="pet-drawer-overlay" id="pet-drawer-overlay"></div>
-    <aside class="pet-drawer" id="pet-drawer">
-        <div class="drawer-header">
-            <span class="drawer-title">🐍 MINI & PETS SETTINGS</span>
-            <button class="drawer-close-btn" id="drawer-close-btn">✕</button>
-        </div>
+<!-- CODEX-STYLE MINI & PETS SETTINGS DRAWER -->
+<div class="drawer-backdrop" id="pet-backdrop"></div>
+<aside class="pet-drawer" id="pet-drawer">
+    <div class="panel-head">
+        <span>🐍 MINI & PETS (CODEX STYLE)</span>
+        <button class="icon-btn" id="btn-close-pet" style="padding:4px 8px;">✕</button>
+    </div>
 
-        <!-- Sezione 1: Anteprima Interattiva Pet -->
-        <div class="drawer-section">
-            <div class="drawer-section-title">✨ ANTEPRIMA PERSONAGGETTO</div>
-            <div class="pet-playground">
-                <canvas id="mini-pet-preview-canvas" width="140" height="140"></canvas>
-                <div class="pet-playground-hint">Passa il mouse per accarezzare o fai click!</div>
+    <div class="drawer-scroll">
+        <div class="pet-preview-box">
+            <canvas id="mini-pet-preview-canvas" width="130" height="120"></canvas>
+            <div style="display:flex;gap:8px;margin-top:8px;">
+                <button class="icon-btn accent" id="btn-pet-wave" style="font-size:11px;">👋 Saluta</button>
+                <button class="icon-btn" id="btn-pet-center" style="font-size:11px;">🎯 Centra Pet</button>
             </div>
         </div>
 
-        <!-- Sezione 2: Selezione Specie / Skin -->
-        <div class="drawer-section">
-            <div class="drawer-section-title">🎨 SPECIE & SKIN SERPENTE</div>
-            <div class="skin-grid" id="skin-grid">
-                <button class="skin-btn active" data-skin="emerald">
-                    <span class="skin-dot" style="background: #00ff88; color: #00ff88;"></span>
-                    <span>Emerald Viper</span>
-                </button>
-                <button class="skin-btn" data-skin="cyber">
-                    <span class="skin-dot" style="background: #c77dff; color: #c77dff;"></span>
-                    <span>Cyber Python</span>
-                </button>
-                <button class="skin-btn" data-skin="golden">
-                    <span class="skin-dot" style="background: #ffb703; color: #ffb703;"></span>
-                    <span>Golden Cobra</span>
-                </button>
-                <button class="skin-btn" data-skin="crimson">
-                    <span class="skin-dot" style="background: #ff0055; color: #ff0055;"></span>
-                    <span>Crimson Mamba</span>
-                </button>
-                <button class="skin-btn" data-skin="mecha" style="grid-column: span 2;">
-                    <span class="skin-dot" style="background: #00f0ff; color: #00f0ff;"></span>
-                    <span>Mecha Robo-Snake</span>
-                </button>
+        <div>
+            <div class="dock-label">Stile & Dimensione</div>
+            <div class="seg-group" style="margin-bottom:8px;">
+                <button class="seg-btn active" data-pet-style="pixel">👾 Pixel Viper</button>
+                <button class="seg-btn" data-pet-style="classic">🐍 Classic</button>
+            </div>
+            <div class="seg-group">
+                <button class="seg-btn" data-pet-size="small">Piccolo</button>
+                <button class="seg-btn active" data-pet-size="medium">Medio</button>
+                <button class="seg-btn" data-pet-size="large">Grande</button>
             </div>
         </div>
 
-        <!-- Sezione 3: Pillolette ON/OFF (App & Visibilità) -->
-        <div class="drawer-section">
-            <div class="drawer-section-title">📱 MOSTRA SULLE APP (PILLOLETTE ON/OFF)</div>
-            <div class="pills-list">
-                
-                <div class="pill-row">
-                    <div class="pill-info">
-                        <div class="pill-label">Floating Pet su Desktop</div>
-                        <div class="pill-sub">Overlay fluttuante e trascinabile a schermo</div>
-                    </div>
-                    <label class="pill-switch">
-                        <input type="checkbox" checked id="pill-desktop-overlay">
-                        <span class="pill-slider"></span>
-                    </label>
-                </div>
-
-                <div class="pill-row">
-                    <div class="pill-info">
-                        <div class="pill-label">Mostra su WhatsApp</div>
-                        <div class="pill-sub">Galleggia sopra la finestra di WhatsApp</div>
-                    </div>
-                    <label class="pill-switch">
-                        <input type="checkbox" checked id="pill-whatsapp">
-                        <span class="pill-slider"></span>
-                    </label>
-                </div>
-
-                <div class="pill-row">
-                    <div class="pill-info">
-                        <div class="pill-label">Mostra su Spotify</div>
-                        <div class="pill-sub">Reagisce alla musica e a Spotify</div>
-                    </div>
-                    <label class="pill-switch">
-                        <input type="checkbox" checked id="pill-spotify">
-                        <span class="pill-slider"></span>
-                    </label>
-                </div>
-
-                <div class="pill-row">
-                    <div class="pill-info">
-                        <div class="pill-label">Mostra su Browser / Meet</div>
-                        <div class="pill-sub">Accompagna le sessioni di navigazione</div>
-                    </div>
-                    <label class="pill-switch">
-                        <input type="checkbox" checked id="pill-browser">
-                        <span class="pill-slider"></span>
-                    </label>
-                </div>
-
-                <div class="pill-row">
-                    <div class="pill-info">
-                        <div class="pill-label">Mostra su Blocco Note</div>
-                        <div class="pill-sub">Presente durante la scrittura di testo</div>
-                    </div>
-                    <label class="pill-switch">
-                        <input type="checkbox" checked id="pill-notepad">
-                        <span class="pill-slider"></span>
-                    </label>
-                </div>
-
+        <div>
+            <div class="dock-label">Skin Serpente</div>
+            <div class="skin-grid">
+                <button class="skin-btn active" data-skin="emerald"><span class="skin-dot" style="background:#00ff88"></span>Emerald</button>
+                <button class="skin-btn" data-skin="cyber"><span class="skin-dot" style="background:#c77dff"></span>Cyber</button>
+                <button class="skin-btn" data-skin="golden"><span class="skin-dot" style="background:#ffb703"></span>Golden</button>
+                <button class="skin-btn" data-skin="crimson"><span class="skin-dot" style="background:#ff2a6d"></span>Crimson</button>
+                <button class="skin-btn" data-skin="mecha" style="grid-column:span 2;"><span class="skin-dot" style="background:#00f0ff"></span>Mecha Robo-Snake</button>
             </div>
         </div>
 
-        <!-- Sezione 4: Pillolette Comportamento & Animazioni -->
-        <div class="drawer-section">
-            <div class="drawer-section-title">⚡ COMPORTAMENTO & ANIMAZIONI</div>
-            <div class="pills-list">
-                
-                <div class="pill-row">
-                    <div class="pill-info">
-                        <div class="pill-label">Lingua Biforcuta Dinamica</div>
-                        <div class="pill-sub">Guizza fuori a intervalli regolari</div>
-                    </div>
-                    <label class="pill-switch">
-                        <input type="checkbox" checked id="pill-tongue">
-                        <span class="pill-slider"></span>
-                    </label>
-                </div>
-
-                <div class="pill-row">
-                    <div class="pill-info">
-                        <div class="pill-label">Oscillazione Vocale (Sway)</div>
-                        <div class="pill-sub">Ondeggia da destra a sinistra mentre parla</div>
-                    </div>
-                    <label class="pill-switch">
-                        <input type="checkbox" checked id="pill-sway">
-                        <span class="pill-slider"></span>
-                    </label>
-                </div>
-
-            </div>
+        <div>
+            <div class="dock-label">Opacità: <b id="pet-opacity-val">96%</b></div>
+            <input type="range" id="pet-opacity" min="40" max="100" value="96" style="width:100%;accent-color:#00ff88;">
         </div>
 
-    </aside>
+        <div style="display:flex;flex-direction:column;gap:7px;">
+            <div class="dock-label">Visibilità sulle App (Live)</div>
+            <div class="pill-row">
+                <div><div class="pill-title">Attiva Floating Pet</div><div class="pill-sub">Overlay trasparente sullo schermo</div></div>
+                <label class="switch"><input type="checkbox" checked id="pet-enabled"><span class="slider"></span></label>
+            </div>
+            <div class="pill-row">
+                <div><div class="pill-title">Mostra Ovunque</div><div class="pill-sub">Se OFF, usa i filtri app qui sotto</div></div>
+                <label class="switch"><input type="checkbox" checked id="pet-all"><span class="slider"></span></label>
+            </div>
+            <div class="pill-row">
+                <div><div class="pill-title">WhatsApp</div></div>
+                <label class="switch"><input type="checkbox" checked id="pet-whatsapp"><span class="slider"></span></label>
+            </div>
+            <div class="pill-row">
+                <div><div class="pill-title">Spotify</div></div>
+                <label class="switch"><input type="checkbox" checked id="pet-spotify"><span class="slider"></span></label>
+            </div>
+            <div class="pill-row">
+                <div><div class="pill-title">Browser / Meet</div></div>
+                <label class="switch"><input type="checkbox" checked id="pet-browser"><span class="slider"></span></label>
+            </div>
+            <div class="pill-row">
+                <div><div class="pill-title">VS Code & Obsidian</div></div>
+                <label class="switch"><input type="checkbox" checked id="pet-vscode"><span class="slider"></span></label>
+            </div>
+            <div class="pill-row">
+                <div><div class="pill-title">Lingua & Fumetto</div></div>
+                <label class="switch"><input type="checkbox" checked id="pet-tongue"><span class="slider"></span></label>
+            </div>
+        </div>
+    </div>
+</aside>
 
-    <script src="snake.js"></script>
-    <script src="app.js"></script>
+<script src="snake.js"></script>
+<script src="app.js"></script>
 </body>
 </html>

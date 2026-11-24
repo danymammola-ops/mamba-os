@@ -46,3 +46,5 @@ Thumbs.db
 
 # Screenshots temporanei di verifica Mamba
 mamba/data/*.png
+mamba/data/tts-cache/
+mamba/ui/pet.pid

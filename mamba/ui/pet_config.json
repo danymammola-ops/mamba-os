@@ -1,0 +1,23 @@
+{
+  "enabled": true,
+  "skin": "emerald",
+  "style": "pixel",
+  "size": "small",
+  "opacity": 0.96,
+  "show_on_all": true,
+  "show_on_desktop": true,
+  "show_on_whatsapp": true,
+  "show_on_spotify": true,
+  "show_on_browser": true,
+  "show_on_notepad": true,
+  "show_on_vscode": true,
+  "show_on_obsidian": true,
+  "animated_tongue": true,
+  "speaking_sway": true,
+  "slither_idle": true,
+  "bubble_enabled": true,
+  "position_x": 700,
+  "position_y": 364,
+  "wave_until": 1795559139.862127,
+  "recenter": false
+}

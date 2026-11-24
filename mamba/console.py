@@ -39,7 +39,33 @@ except Exception:
 def clean_llm_reply(text: str) -> str:
     if not text:
         return ""
-    text = re.sub(r"<think>.*?</think>", "", text, flags=re.DOTALL)
+    # Rimuove blocchi <think>...</think> completi o non chiusi
+    text = re.sub(r"<think>.*?(?:</think>|$)", "", text, flags=re.DOTALL).strip()
+
+    # Se il modello di ragionamento ha stampato bozze/constraint interni, prendi l'ultima risposta pulita
+    leak_markers = [
+        r"Refine to be[^\n]*:",
+        r"Final [Aa]nswer[^\n]*:",
+        r"Risposta finale[^\n]*:",
+        r"Revised [Dd]raft[^\n]*:",
+    ]
+    for pat in leak_markers:
+        parts = re.split(pat, text, flags=re.IGNORECASE)
+        if len(parts) > 1 and parts[-1].strip():
+            text = parts[-1].strip()
+
+    if "Check constraints:" in text:
+        before, after = text.split("Check constraints:", 1)
+        # Se dopo "Check constraints:" c'è una sezione raffinata usala, altrimenti usa la parte precedente
+        if ":" in after:
+            tail = after.rsplit(":", 1)[-1].strip()
+            if len(tail) > 20:
+                text = tail
+            elif before.strip():
+                text = before.strip()
+        elif before.strip():
+            text = before.strip()
+
     if "Here's a thinking process:" in text:
         parts = text.split("Here's a thinking process:")
         after = parts[-1]
@@ -50,7 +76,11 @@ def clean_llm_reply(text: str) -> str:
         ]
         if lines:
             text = "\n".join(lines[-4:]).strip()
-    return text.strip()
+
+    text = text.strip()
+    if len(text) >= 2 and text[0] == '"' and text[-1] == '"':
+        text = text[1:-1].strip()
+    return text
 
 
 class MambaConsole:
@@ -200,12 +230,14 @@ class MambaConsole:
 
         else:
             try:
-                brain_ctx = self.brain.get_context_snippet(user_prompt, max_chars=2200) if (self.brain and self.brain.available) else ""
+                brain_ctx = self.brain.get_context_snippet(user_prompt, max_chars=4200) if (self.brain and self.brain.available) else ""
                 system_instruction = (
-                    "Sei MAMBA OS, il sistema operativo cognitivo personale di Daniele Mammola (Dany) su Windows 11. "
-                    "Sei rapido, brillante, diretto e operativo, mai prolisso o cerimonioso. "
-                    "Sei connesso al suo PC Windows 11, al suo Secondo Cervello Obsidian, a Claude Code e alle sue app. "
-                    "Rispondi in italiano naturale e diretto (max 2-4 frasi, salvo quando ti chiede codice o dettagli)."
+                    "Sei MAMBA OS v2.0, l'assistente cognitivo personale di Daniele Mammola (Dany) su Windows 11. "
+                    "Architettura reale che stai usando ora: routing veloce via FreeLLMAPI (127.0.0.1:31415, modello auto:fast gratuito con failover su 90+ modelli), "
+                    "memoria persistente dal Secondo Cervello Obsidian (37+ note indicizzate in SQLite FTS5 + Galaxy 3D), "
+                    "voce neurale Edge-TTS italiana a coda non-interrompente, Codex-style MiniPet e Claude Code CLI per codice e terminale. "
+                    "Rispondi direttamente in italiano naturale e conciso (2-4 frasi complete). "
+                    "NON mostrare mai bozze, ragionamenti interni, tag <think>, 'Check constraints' o virgolette esterne attorno alla risposta."
                 )
                 if brain_ctx:
                     system_instruction += f"\n\n[CONTESTO DAL SECONDO CERVELLO DI DANIELE]:\n{brain_ctx}"
@@ -215,7 +247,7 @@ class MambaConsole:
                     messages.extend(self.conversation_history[-self.max_history:])
                 messages.append({"role": "user", "content": user_prompt})
 
-                res = self.freellm.chat(messages, model="auto:fast", temperature=0.65, max_tokens=650)
+                res = self.freellm.chat(messages, model="auto:fast", temperature=0.55, timeout=18, max_tokens=1600)
                 out = clean_llm_reply(res["content"].strip())
             except Exception as e:
                 # Fallback intelligente locale usando i dati del Secondo Cervello se FreeLLMAPI è spento

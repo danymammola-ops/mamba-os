@@ -82,7 +82,7 @@ class BrainBridge:
         except Exception:
             return None
 
-    def get_context_snippet(self, prompt: str, max_chars: int = 2200) -> str:
+    def get_context_snippet(self, prompt: str, max_chars: int = 4200) -> str:
         if not self.store:
             return ""
         try:

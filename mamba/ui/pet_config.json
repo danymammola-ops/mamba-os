@@ -1,7 +1,7 @@
 {
   "enabled": true,
   "skin": "emerald",
-  "style": "pixel",
+  "style": "classic",
   "size": "small",
   "opacity": 0.96,
   "show_on_all": true,
@@ -16,8 +16,8 @@
   "speaking_sway": true,
   "slither_idle": true,
   "bubble_enabled": true,
-  "position_x": 700,
-  "position_y": 364,
+  "position_x": 720,
+  "position_y": 384,
   "wave_until": 1795559139.862127,
   "recenter": false
 }

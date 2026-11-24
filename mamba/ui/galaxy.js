@@ -64,12 +64,13 @@ class GalaxyBrain {
     }
 
     _initStars() {
-        this.stars = Array.from({ length: 240 }, () => ({
-            x: (Math.random() - 0.5) * 2.2,
-            y: (Math.random() - 0.5) * 2.2,
-            z: (Math.random() - 0.5) * 2.2,
-            size: Math.random() * 1.4 + 0.3,
-            alpha: Math.random() * 0.55 + 0.15,
+        // Poche micro-stelle lontane e tenui così ogni nodo luminoso è davvero una nota di Obsidian
+        this.stars = Array.from({ length: 55 }, () => ({
+            x: (Math.random() - 0.5) * 2.4,
+            y: (Math.random() - 0.5) * 2.4,
+            z: (Math.random() - 0.5) * 2.4,
+            size: Math.random() * 1.0 + 0.3,
+            alpha: Math.random() * 0.22 + 0.06,
             twinkle: Math.random() * Math.PI * 2,
         }));
     }
@@ -132,8 +133,8 @@ class GalaxyBrain {
             const y = 1 - (i / Math.max(nCount - 1, 1)) * 2;
             const rAtY = Math.sqrt(Math.max(0, 1 - y * y));
             const theta = goldenAngle * i;
-            // Hub vicini al centro luminoso, foglie su orbite più esterne
-            const orbitRadius = Math.max(55, 250 - Math.min(n.degree, 24) * 7.5);
+            // Disposizione ben spaziata per distinguere subito tutte le note del grafo Obsidian
+            const orbitRadius = Math.max(120, 290 - Math.min(n.degree, 20) * 6.5);
             const cfg = GROUP_CONFIG[n.group] || GROUP_CONFIG.all;
             return {
                 ...n,
@@ -142,7 +143,7 @@ class GalaxyBrain {
                 y: existing ? existing.y : y * orbitRadius,
                 z: existing ? existing.z : Math.sin(theta) * rAtY * orbitRadius,
                 vx: 0, vy: 0, vz: 0,
-                radius: Math.min(13, 3.6 + Math.sqrt(n.degree + 1) * 1.35),
+                radius: Math.min(13, 3.8 + Math.sqrt(n.degree + 1) * 1.35),
                 sx: 0, sy: 0, sz: 0, scale: 1,
             };
         });
@@ -184,12 +185,12 @@ class GalaxyBrain {
     _stepPhysics(damping = 0.85) {
         const nodes = this.nodes;
         const len = nodes.length;
-        const repulse = 4200;
+        const repulse = 15000;
 
         for (let i = 0; i < len; i++) {
             const a = nodes[i];
-            // Attrazione leggera al centro sferico (più forte per gli hub)
-            const centerPull = 0.003 + Math.min(a.degree, 25) * 0.0005;
+            // Attrazione dolce e uniforme così gli hub restano ben distanziati e leggibili
+            const centerPull = 0.0042;
             a.vx -= a.x * centerPull;
             a.vy -= a.y * centerPull;
             a.vz -= a.z * centerPull;
@@ -199,10 +200,10 @@ class GalaxyBrain {
                 const dx = a.x - b.x;
                 const dy = a.y - b.y;
                 const dz = a.z - b.z;
-                const d2 = dx * dx + dy * dy + dz * dz + 36;
-                if (d2 > 140000) continue;
-                const f = repulse / (d2 * Math.sqrt(d2));
-                const fx = dx * f, fy = dy * f, fz = dz * f;
+                const d2 = dx * dx + dy * dy + dz * dz + 80;
+                const dist = Math.sqrt(d2);
+                const f = repulse / d2;
+                const fx = (dx / dist) * f, fy = (dy / dist) * f, fz = (dz / dist) * f;
                 a.vx += fx; a.vy += fy; a.vz += fz;
                 b.vx -= fx; b.vy -= fy; b.vz -= fz;
             }
@@ -214,8 +215,8 @@ class GalaxyBrain {
             const dy = e.t.y - e.s.y;
             const dz = e.t.z - e.s.z;
             const dist = Math.sqrt(dx * dx + dy * dy + dz * dz) || 1;
-            const targetLen = 115;
-            const k = (dist - targetLen) * 0.0032;
+            const targetLen = 165;
+            const k = (dist - targetLen) * 0.0045;
             const fx = (dx / dist) * k;
             const fy = (dy / dist) * k;
             const fz = (dz / dist) * k;
@@ -421,14 +422,14 @@ class GalaxyBrain {
             }
             ctx.restore();
 
-            // Label rendering: hubs, searched, hovered, neighbors, or front nodes
+            // Label rendering: mostra sempre le note principali ben leggibili come su Obsidian
             const showLabel =
                 matched && (
                     isFocus ||
                     isNeighbor ||
                     this.searchTerm.length > 0 ||
-                    n.degree >= 12 ||
-                    (n.sz < 50 && n.scale > 0.85)
+                    n.degree >= 8 ||
+                    (n.sz < 90 && n.scale > 0.75)
                 );
 
             if (showLabel) {

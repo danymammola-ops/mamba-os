@@ -173,6 +173,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let currentMode = 'auto';
     let galaxyLoaded = false;
+    let pendingCommands = 0;
 
     function addLog(text, level = 'info') {
         const t = new Date().toTimeString().split(' ')[0];
@@ -197,13 +198,23 @@ document.addEventListener('DOMContentLoaded', () => {
     function setSnakeUIState(st) {
         if (st === 'thinking') {
             snake.setState('thinking');
-            snakeBadge.innerText = '⚡ SLITHER // ELABORAZIONE...';
+            snakeBadge.innerText = '⚡ SHENRON // ELABORAZIONE...';
         } else if (st === 'speaking') {
             snake.setState('speaking');
             snakeBadge.innerText = '🔊 SPEAKING // VOCE NEURALE';
         } else {
             snake.setState('idle');
-            snakeBadge.innerText = '● IDLE // READY';
+            snakeBadge.innerText = '● IDLE // SHENRON READY';
+        }
+    }
+
+    function syncSnakeState() {
+        if (pendingCommands > 0) {
+            setSnakeUIState('thinking');
+        } else if (mouth.busy) {
+            setSnakeUIState('speaking');
+        } else {
+            setSnakeUIState('idle');
         }
     }
 
@@ -215,12 +226,12 @@ document.addEventListener('DOMContentLoaded', () => {
     // Voice Engine con coda stretta (non interrompe mai la lettura in corso!)
     const mouth = new VoiceMouth({
         onStart: () => {
-            if (snake.state !== 'thinking') setSnakeUIState('speaking');
+            syncSnakeState();
             btnVoiceStop.style.display = 'inline-flex';
         },
         onLevel: (lvl) => snake.setAudioLevel(lvl),
         onEnd: () => {
-            if (snake.state !== 'thinking') setSnakeUIState('idle');
+            syncSnakeState();
             btnVoiceStop.style.display = 'none';
         },
         onQueueChange: (count) => {
@@ -304,7 +315,7 @@ document.addEventListener('DOMContentLoaded', () => {
         chatFeed.scrollTop = chatFeed.scrollHeight;
     }
 
-    // Send Command (NON interrompe la voce precedente!)
+    // Send Command (NON interrompe la voce precedente e sblocca sempre il serpente!)
     async function sendCommand(promptText) {
         const text = (promptText || '').trim();
         if (!text) return;
@@ -313,8 +324,8 @@ document.addEventListener('DOMContentLoaded', () => {
         appendChatMsg('user', text);
         addLog(`TU (${currentMode}): "${text}"`, 'info');
 
-        // Avvia l'animazione Pixel Snake che striscia velocemente L -> R!
-        setSnakeUIState('thinking');
+        pendingCommands++;
+        syncSnakeState();
         const t0 = performance.now();
 
         try {
@@ -326,27 +337,26 @@ document.addEventListener('DOMContentLoaded', () => {
             const data = await resp.json();
             const elapsed = ((performance.now() - t0) / 1000).toFixed(2);
 
+            pendingCommands = Math.max(0, pendingCommands - 1);
+
             if (data.success) {
                 const reply = data.output || 'Completato.';
                 appendChatMsg('assistant', reply, `${(data.route || 'auto').toUpperCase()} · ${elapsed}s`);
                 addLog(`MAMBA [${data.route}] in ${elapsed}s`, 'info');
 
-                // Accoda la nuova risposta vocale senza tagliare quella in corso!
                 if (mouth.enabled) {
                     mouth.enqueue(reply);
-                    if (!mouth.playing) setSnakeUIState('idle');
-                } else {
-                    setSnakeUIState('idle');
                 }
             } else {
                 appendChatMsg('assistant', `Errore: ${data.error}`, 'ERROR');
                 addLog(`ERRORE: ${data.error}`, 'error');
-                setSnakeUIState(mouth.busy ? 'speaking' : 'idle');
             }
         } catch (err) {
+            pendingCommands = Math.max(0, pendingCommands - 1);
             appendChatMsg('assistant', `Errore rete: ${err.message}`, 'NETWORK ERROR');
             addLog(`Errore rete: ${err.message}`, 'error');
-            setSnakeUIState(mouth.busy ? 'speaking' : 'idle');
+        } finally {
+            syncSnakeState();
         }
     }
 

@@ -323,19 +323,35 @@ class MambaUIHandler(SimpleHTTPRequestHandler):
         return self._send_json(404, {"error": "Endpoint not found"})
 
 
+class RobustThreadingHTTPServer(ThreadingHTTPServer):
+    allow_reuse_address = True
+    daemon_threads = True
+
+    def handle_error(self, request, client_address):
+        exc_type, _, _ = sys.exc_info()
+        if exc_type in (ConnectionResetError, BrokenPipeError, ConnectionAbortedError, TimeoutError):
+            return
+        super().handle_error(request, client_address)
+
+
 def run_server(port: int = 5173):
     server_address = ("127.0.0.1", port)
     try:
-        httpd = ThreadingHTTPServer(server_address, MambaUIHandler)
+        httpd = RobustThreadingHTTPServer(server_address, MambaUIHandler)
     except OSError:
         print(f"ℹ️ [MAMBA OS HUD] Server già attivo su http://127.0.0.1:{port}")
         return
 
     print(f"🐍 [MAMBA OS v2.0] Server multi-thread attivo su: http://127.0.0.1:{port}")
-    try:
-        httpd.serve_forever()
-    except KeyboardInterrupt:
-        httpd.server_close()
+    while True:
+        try:
+            httpd.serve_forever()
+        except KeyboardInterrupt:
+            httpd.server_close()
+            break
+        except Exception as exc:
+            print(f"⚠️ [MAMBA OS HUD] Connessione transiente ({exc}), ripristino ascolto...")
+            time.sleep(0.5)
 
 
 if __name__ == "__main__":

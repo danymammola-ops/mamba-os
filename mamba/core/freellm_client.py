@@ -98,75 +98,65 @@ class FreeLLMClient:
             print(f"⚠️ [Mamba FreeLLM] Errore verifica modelli: {e}")
             return []
 
-    def chat(self, messages: List[Dict[str, str]], model: str = "auto:fast", temperature: float = 0.7, timeout: int = 12, max_tokens: int = 350) -> Dict[str, Any]:
+    def chat(self, messages: List[Dict[str, str]], model: str = "gpt-oss-20b", temperature: float = 0.7, timeout: int = 12, max_tokens: int = 800, _allow_fallback: bool = True) -> Dict[str, Any]:
         """
-        Invia una richiesta di chat a FreeLLMAPI con failover automatico se lento o in rate-limit (429).
-        Restituisce un dizionario con {'content': str, 'provider': str, 'latency': float}.
+        Invia una richiesta di chat a FreeLLMAPI con failover lineare sicuro (no ricorsione infinita).
         """
         now = time.time()
-        # Se il modello richiesto è in cooldown (es. per errore 429), passa subito ad 'auto:fast'
-        if model != "auto:fast" and model in FreeLLMClient._cooldowns:
-            if now < FreeLLMClient._cooldowns[model]:
-                model = "auto:fast"
+        candidates = [model]
+        if _allow_fallback:
+            for fb in ["gpt-oss-20b", "qwen-3.8-27b", "llama-3.3-70b-fp8-fast", "nemotron-3.5-bolt-e4b", "auto:fast"]:
+                if fb not in candidates:
+                    candidates.append(fb)
 
-        payload = {
-            "model": model,
-            "messages": messages,
-            "temperature": temperature,
-            "max_tokens": max_tokens,
-            "stream": False
-        }
-        data = json.dumps(payload).encode("utf-8")
-        url = f"{self.base_url}/chat/completions"
-        headers = {
-            "Content-Type": "application/json",
-            "Authorization": f"Bearer {self.api_key}"
-        }
+        last_err: Optional[Exception] = None
+        for idx, cand in enumerate(candidates):
+            if idx > 0 and FreeLLMClient._cooldowns.get(cand, 0) > now:
+                continue
+            payload = {
+                "model": cand,
+                "messages": messages,
+                "temperature": temperature,
+                "max_tokens": max_tokens,
+                "stream": False,
+            }
+            data = json.dumps(payload).encode("utf-8")
+            url = f"{self.base_url}/chat/completions"
+            headers = {
+                "Content-Type": "application/json",
+                "Authorization": f"Bearer {self.api_key}",
+            }
+            start_time = time.time()
+            req = urllib.request.Request(url, data=data, headers=headers, method="POST")
+            try:
+                with urllib.request.urlopen(req, timeout=timeout) as resp:
+                    elapsed = time.time() - start_time
+                    self.last_latency = round(elapsed, 2)
+                    self.last_provider = resp.headers.get("X-Routed-Via", cand)
+                    body = json.loads(resp.read().decode("utf-8"))
+                    choice = body.get("choices", [{}])[0]
+                    content = (choice.get("message", {}).get("content") or "").strip()
+                    if not content:
+                        raise RuntimeError(f"Risposta vuota da {cand}")
+                    return {
+                        "content": content,
+                        "provider": self.last_provider,
+                        "model": cand,
+                        "latency": self.last_latency,
+                        "raw": body,
+                    }
+            except urllib.error.HTTPError as e:
+                last_err = e
+                if e.code == 429:
+                    FreeLLMClient._cooldowns[cand] = time.time() + 180
+                continue
+            except Exception as e:
+                last_err = e
+                continue
 
-        start_time = time.time()
-        req = urllib.request.Request(url, data=data, headers=headers, method="POST")
-
-        backup_models = ["google/gemini-2.5-flash", "cloudflare/@cf/qwen/qwen3.8-27b", "meta/llama-3.3-70b-instruct"]
-
-        try:
-            with urllib.request.urlopen(req, timeout=timeout) as resp:
-                elapsed = time.time() - start_time
-                self.last_latency = round(elapsed, 2)
-                self.last_provider = resp.headers.get("X-Routed-Via", "FreeLLMAPI")
-                body = json.loads(resp.read().decode("utf-8"))
-                choice = body.get("choices", [{}])[0]
-                content = choice.get("message", {}).get("content", "")
-                return {
-                    "content": content,
-                    "provider": self.last_provider,
-                    "latency": self.last_latency,
-                    "raw": body
-                }
-        except urllib.error.HTTPError as e:
-            # Gestione specifica 429 Too Many Requests
-            if e.code == 429:
-                FreeLLMClient._cooldowns[model] = time.time() + 180  # 3 minuti di cooldown
-                print(f"ℹ️ [Mamba FreeLLM] Quota esaurita su '{model}' (429). Routing istantaneo verso backup...")
-            else:
-                print(f"⚠️ [Mamba FreeLLM] HTTP {e.code} su {model}. Tentativo con modello di riserva...")
-
-            # Failover a cascata
-            for b_model in backup_models:
-                if b_model != model and FreeLLMClient._cooldowns.get(b_model, 0) < now:
-                    try:
-                        return self.chat(messages, model=b_model, temperature=temperature, timeout=10, max_tokens=max_tokens)
-                    except Exception:
-                        continue
-            raise e
-        except (urllib.error.URLError, TimeoutError) as e:
-            print(f"⚠️ [Mamba FreeLLM] Connessione lenta/timeout su {model} ({e}). Tentativo failover ultra-rapido...")
-            for b_model in backup_models:
-                if b_model != model:
-                    try:
-                        return self.chat(messages, model=b_model, temperature=temperature, timeout=8, max_tokens=max_tokens)
-                    except Exception:
-                        continue
-            raise e
+        if last_err:
+            raise last_err
+        raise RuntimeError("Nessun modello FreeLLMAPI disponibile")
 
     def stream_chat(self, messages: List[Dict[str, str]], model: str = "auto", temperature: float = 0.7) -> Generator[str, None, None]:
         """

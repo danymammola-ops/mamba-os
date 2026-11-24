@@ -247,8 +247,13 @@ class MambaConsole:
                     messages.extend(self.conversation_history[-self.max_history:])
                 messages.append({"role": "user", "content": user_prompt})
 
-                res = self.freellm.chat(messages, model="auto:fast", temperature=0.55, timeout=18, max_tokens=1600)
-                out = clean_llm_reply(res["content"].strip())
+                res = self.freellm.chat(messages, model="gpt-oss-20b", temperature=0.5, timeout=15, max_tokens=1200)
+                raw_reply = res["content"].strip()
+                # Se un modello di ragionamento ha esportato solo il thinking process, ritenta con qwen-3.8-27b
+                if raw_reply.startswith("Here's a thinking process:"):
+                    res2 = self.freellm.chat(messages, model="qwen-3.8-27b", temperature=0.5, timeout=15, max_tokens=1000)
+                    raw_reply = res2["content"].strip()
+                out = clean_llm_reply(raw_reply)
             except Exception as e:
                 # Fallback intelligente locale usando i dati del Secondo Cervello se FreeLLMAPI è spento
                 if self.brain and self.brain.available:
